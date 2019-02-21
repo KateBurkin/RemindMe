@@ -13,6 +13,11 @@
 		44410123221E2F1500E3A6A4 /* RemindMe.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 44410121221E2F1500E3A6A4 /* RemindMe.xcdatamodeld */; };
 		44410125221E2F1700E3A6A4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44410124221E2F1700E3A6A4 /* Assets.xcassets */; };
 		44410128221E2F1700E3A6A4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 44410126221E2F1700E3A6A4 /* LaunchScreen.storyboard */; };
+		44410134221E540B00E3A6A4 /* binIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 44410133221E540A00E3A6A4 /* binIcon.png */; };
+		44410136221E545700E3A6A4 /* musicicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 44410135221E545600E3A6A4 /* musicicon.png */; };
+		44410138221E58C200E3A6A4 /* ChoreDetailsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44410137221E58C200E3A6A4 /* ChoreDetailsController.swift */; };
+		4441013A221E609F00E3A6A4 /* dog_bark4.wav in Resources */ = {isa = PBXBuildFile; fileRef = 44410139221E609F00E3A6A4 /* dog_bark4.wav */; };
+		4441013C221E60AB00E3A6A4 /* cat_meow_x.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4441013B221E60AB00E3A6A4 /* cat_meow_x.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,7 +28,12 @@
 		44410122221E2F1500E3A6A4 /* RemindMe.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RemindMe.xcdatamodel; sourceTree = "<group>"; };
 		44410124221E2F1700E3A6A4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		44410127221E2F1700E3A6A4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		44410129221E2F1700E3A6A4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		44410129221E2F1700E3A6A4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Info.plist; path = "../Supporting Files/Info.plist"; sourceTree = "<group>"; };
+		44410133221E540A00E3A6A4 /* binIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = binIcon.png; sourceTree = "<group>"; };
+		44410135221E545600E3A6A4 /* musicicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = musicicon.png; sourceTree = "<group>"; };
+		44410137221E58C200E3A6A4 /* ChoreDetailsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ChoreDetailsController.swift; path = RemindMe/Controller/ChoreDetailsController.swift; sourceTree = SOURCE_ROOT; };
+		44410139221E609F00E3A6A4 /* dog_bark4.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dog_bark4.wav; sourceTree = "<group>"; };
+		4441013B221E60AB00E3A6A4 /* cat_meow_x.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = cat_meow_x.wav; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +51,7 @@
 			isa = PBXGroup;
 			children = (
 				44410119221E2F1500E3A6A4 /* RemindMe */,
+				44410132221E2F6200E3A6A4 /* Supporting Files */,
 				44410118221E2F1500E3A6A4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -56,15 +67,51 @@
 		44410119221E2F1500E3A6A4 /* RemindMe */ = {
 			isa = PBXGroup;
 			children = (
-				4441011A221E2F1500E3A6A4 /* AppDelegate.swift */,
-				4441011C221E2F1500E3A6A4 /* ViewController.swift */,
-				4441011E221E2F1500E3A6A4 /* Main.storyboard */,
-				44410124221E2F1700E3A6A4 /* Assets.xcassets */,
-				44410126221E2F1700E3A6A4 /* LaunchScreen.storyboard */,
 				44410129221E2F1700E3A6A4 /* Info.plist */,
-				44410121221E2F1500E3A6A4 /* RemindMe.xcdatamodeld */,
+				44410131221E2F5000E3A6A4 /* Controller */,
+				44410130221E2F4C00E3A6A4 /* View */,
+				4441012F221E2F4500E3A6A4 /* Model */,
 			);
 			path = RemindMe;
+			sourceTree = "<group>";
+		};
+		4441012F221E2F4500E3A6A4 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				44410121221E2F1500E3A6A4 /* RemindMe.xcdatamodeld */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		44410130221E2F4C00E3A6A4 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				44410126221E2F1700E3A6A4 /* LaunchScreen.storyboard */,
+				4441011E221E2F1500E3A6A4 /* Main.storyboard */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		44410131221E2F5000E3A6A4 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				4441011A221E2F1500E3A6A4 /* AppDelegate.swift */,
+				4441011C221E2F1500E3A6A4 /* ViewController.swift */,
+				44410137221E58C200E3A6A4 /* ChoreDetailsController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		44410132221E2F6200E3A6A4 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				44410124221E2F1700E3A6A4 /* Assets.xcassets */,
+				44410133221E540A00E3A6A4 /* binIcon.png */,
+				44410139221E609F00E3A6A4 /* dog_bark4.wav */,
+				4441013B221E60AB00E3A6A4 /* cat_meow_x.wav */,
+				44410135221E545600E3A6A4 /* musicicon.png */,
+			);
+			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -125,8 +172,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4441013C221E60AB00E3A6A4 /* cat_meow_x.wav in Resources */,
+				44410136221E545700E3A6A4 /* musicicon.png in Resources */,
 				44410128221E2F1700E3A6A4 /* LaunchScreen.storyboard in Resources */,
 				44410125221E2F1700E3A6A4 /* Assets.xcassets in Resources */,
+				44410134221E540B00E3A6A4 /* binIcon.png in Resources */,
+				4441013A221E609F00E3A6A4 /* dog_bark4.wav in Resources */,
 				44410120221E2F1500E3A6A4 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -140,6 +191,7 @@
 			files = (
 				4441011D221E2F1500E3A6A4 /* ViewController.swift in Sources */,
 				4441011B221E2F1500E3A6A4 /* AppDelegate.swift in Sources */,
+				44410138221E58C200E3A6A4 /* ChoreDetailsController.swift in Sources */,
 				44410123221E2F1500E3A6A4 /* RemindMe.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
