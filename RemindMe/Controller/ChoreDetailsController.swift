@@ -9,20 +9,45 @@
 import UIKit
 import Foundation
 
-class ChoreDetailsController: UIViewController {
+protocol CanReceive {
+    func dataReceived(data: String)
     
+    //choreTitle
+    //choreImage
+    //choreMusic
+    //choreStartDate
+    //choreEndDate
+    //choreFrequency
+    //choreTimesPerDay
+    //choreReminderTime1
+}
+
+class ChoreDetailsController: UIViewController {
+    //Buttons
     @IBOutlet weak var cancelButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
     
-    var textPassOver : String = ""
-    var senderIdentifier : Int = 0
+    //TextFields
+    @IBOutlet weak var choreTitle: UITextField!
+    @IBOutlet weak var choreSound: UITextField!
+    @IBOutlet weak var choreImage: UIImageView!
+    @IBOutlet weak var choreStartDate: UITextField!
+    @IBOutlet weak var choreEndDAte: UITextField!
+    @IBOutlet weak var choreFrequency: UITextField!
+    @IBOutlet weak var choreTimesPerDay: UITextField!
+    
+    var backscreen : CanReceive?
+    
+    var choreTitlePassOver : String = ""
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        choreTitle.text = choreTitlePassOver
     }
     
     @IBAction func SaveButtonPressed(_ sender: UIButton) {
+        backscreen?.dataReceived(data: choreTitle.text!)
         dismiss(animated: true, completion: nil)
     }
 
@@ -32,3 +57,36 @@ class ChoreDetailsController: UIViewController {
     }
     
 }
+
+
+//
+//class SecondViewController: UIViewController {
+//
+//    var backscreen : CanReceive?
+//
+//    var textPassOver : String = ""
+//    var senderIdentifier : Int = 0
+//
+//
+//
+//    @IBOutlet weak var label: UILabel!
+//
+//    @IBOutlet weak var textFieldBack: UITextView!
+//
+//
+//    override func viewDidLoad() {
+//        super.viewDidLoad()
+//
+//        label.text = textPassOver
+//    }
+//
+//
+//    @IBAction func BackButtonPressed(_ sender: Any) {
+//        backscreen?.dataReceived(data: textFieldBack.text, from: senderIdentifier)
+//        dismiss(animated: true, completion: nil)
+//
+//    }
+//
+//
+//}
+//

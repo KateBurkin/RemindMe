@@ -58,7 +58,7 @@
                                 </state>
                                 <connections>
                                     <action selector="addNewButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="McM-tP-kLy"/>
-                                    <segue destination="uHo-Wg-blE" kind="show" id="lbg-Ib-R9p"/>
+                                    <segue destination="uHo-Wg-blE" kind="show" identifier="goToChoreDetails" id="lbg-Ib-R9p"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -217,6 +217,13 @@
                     </view>
                     <connections>
                         <outlet property="cancelButton" destination="zfJ-yq-NJJ" id="Xm8-nr-ofR"/>
+                        <outlet property="choreEndDAte" destination="Pku-ZK-6zL" id="EjR-In-ct0"/>
+                        <outlet property="choreFrequency" destination="GwU-BX-89u" id="L6I-Rc-zwa"/>
+                        <outlet property="choreImage" destination="hH7-pn-TkG" id="0so-pp-Qef"/>
+                        <outlet property="choreSound" destination="SpA-ZD-ky1" id="S70-Yv-dee"/>
+                        <outlet property="choreStartDate" destination="k1d-Kd-OuI" id="phz-sT-Zv3"/>
+                        <outlet property="choreTimesPerDay" destination="q0r-eM-D8b" id="A7v-wH-E2m"/>
+                        <outlet property="choreTitle" destination="B2i-hE-m3t" id="0aa-F4-vW2"/>
                         <outlet property="saveButton" destination="ZaX-Nn-yQb" id="gfs-hg-r4V"/>
                     </connections>
                 </viewController>

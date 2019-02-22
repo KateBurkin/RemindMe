@@ -1,31 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14460.32" systemVersion="17G5019" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Chore" representedClassName="Chore" syncable="YES" codeGenerationType="class">
-        <attribute name="choreId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="image" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="sound" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="suspended" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="title" attributeType="String" syncable="YES"/>
-    </entity>
-    <entity name="ChoreReminderTracker" representedClassName="ChoreReminderTracker" syncable="YES" codeGenerationType="class">
-        <attribute name="choreRefID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="nextReminder" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="nowNotificationDone" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="nowNotificationNextReminder" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="nowNotificationTime" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-    </entity>
-    <entity name="Schedule" representedClassName="Schedule" syncable="YES" codeGenerationType="class">
-        <attribute name="choreRefID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="enddate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="frequency" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="notificationtime1" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="scheduleID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="startdate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="timesPerDay" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="ch_choreId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="ch_image" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ch_sound" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ch_title" attributeType="String" syncable="YES"/>
+        <attribute name="sh_endDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="sh_frequency" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sh_reminderTime1" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="sh_startDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="sh_suspended" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="sh_timesPerDay" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="tr_nextReminder" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="tr_nowReminderDone" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="tr_nowReminderSnooze" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Chore" positionX="-63" positionY="-18" width="128" height="120"/>
-        <element name="Schedule" positionX="-54" positionY="18" width="128" height="150"/>
-        <element name="ChoreReminderTracker" positionX="-36" positionY="54" width="128" height="120"/>
+        <element name="Chore" positionX="-63" positionY="-18" width="128" height="240"/>
     </elements>
 </model>
