@@ -10,7 +10,7 @@ import UIKit
 import Foundation
 
 protocol CanReceive {
-    func dataReceived(data: String)
+    func dataReceived(mode:String, title: String, row_id: Int)
     
     //choreTitle
     //choreImage
@@ -39,6 +39,9 @@ class ChoreDetailsController: UIViewController {
     var backscreen : CanReceive?
     
     var choreTitlePassOver : String = ""
+    var modePassOver : String = ""
+//DEL    var choreIDPassOver : Int = 0
+    var choreRowPassOver : Int = 0
     
     
     override func viewDidLoad() {
@@ -47,7 +50,7 @@ class ChoreDetailsController: UIViewController {
     }
     
     @IBAction func SaveButtonPressed(_ sender: UIButton) {
-        backscreen?.dataReceived(data: choreTitle.text!)
+        backscreen?.dataReceived(mode: modePassOver, title: choreTitle.text!, row_id: choreRowPassOver)
         dismiss(animated: true, completion: nil)
     }
 

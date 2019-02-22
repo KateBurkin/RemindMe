@@ -14,7 +14,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBOutlet weak var choresTable: UITableView!
     
     var choresArray = [Chore]()
+//DEL    var choreIdToPass : Int = 0
+    var modeToPass : String = ""
+    var choreRowToPass : Int = 0
     var choreTitleToPass : String = ""
+    
     //choreImage
     //choreMusic
     //choreStartDate
@@ -23,7 +27,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //choreTimesPerDay
     //choreReminderTime1
     
+    var modePassedBack : String = ""
+    var choreIDPassedBack : Int = 0
+    var choresArrayRowPassedBack : Int = 0
     var choreTitlePassedBack : String = ""
+    
     //choreImage
     //choreMusic
     //choreStartDate
@@ -66,7 +74,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // populate details from selected chore
+        modeToPass = "Update"
         choreTitleToPass = choresArray[indexPath.row].ch_title!
+//DEL        choreIdToPass = Int(choresArray[indexPath.row].ch_choreId)
+        choreRowToPass = indexPath.row
         
         // perform segue to ChoreDetailsController
         self.performSegue(withIdentifier: "goToChoreDetails", sender: self)
@@ -74,35 +85,48 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     
     @IBAction func addNewButtonPressed(_ sender: Any) {
-        //temporary test values to be removed
-//        let newToDoItem = Chore(context: self.context)
-//        newToDoItem.ch_title = "Feed Rizhik"
-//        newToDoItem.sh_suspended = false
-//        newToDoItem.ch_choreId = 1235
-//        choresArray.append(newToDoItem)
-        //temporary test values to be removed
-        
-
-        choresTable.reloadData()
-        saveItems()
-        loadItems()
+        modeToPass = "New"
+        choreTitleToPass = "Enter chore title here"
+        choreRowToPass = 0
     }
     
     
     //MARK:  SEGUE FUNCTIONS
      override func prepare(for segue: UIStoryboardSegue, sender: Any?){
-        print("called prepare for segue")
-        print(choreTitleToPass)
         let destinationVC = segue.destination as! ChoreDetailsController
+        destinationVC.modePassOver = modeToPass
         destinationVC.choreTitlePassOver = choreTitleToPass
+//DEL        destinationVC.choreIDPassOver = choreIdToPass
+        destinationVC.choreRowPassOver = choreRowToPass
         destinationVC.backscreen = self
     }
     
-    func dataReceived(data: String) {
-        print("Data received back: \(data)")
-        choreTitlePassedBack = data
-        saveItems()
-        loadItems()
+    func dataReceived(mode: String, title: String, row_id: Int) {
+        print("Data received back: \(mode) and \(title) and \(row_id)")
+//DEL        choreTitlePassedBack = data
+//DEL        choresArrayRowPassedBack = row_id
+        if mode == "Update" {
+            let request : NSFetchRequest<Chore> = Chore.fetchRequest()
+            do {
+                let test = try context.fetch(request)
+                let objectUpdate = test[row_id] as NSManagedObject
+                objectUpdate.setValue(title, forKey: "ch_title")
+            } catch {
+                print ("Error updating record \(error)")
+            }
+        
+            saveItems()
+            loadItems()
+        } else {
+            let newChore = Chore(context: self.context)
+            newChore.ch_title = title
+            newChore.ch_choreId = 1234
+            newChore.sh_suspended = false
+            //what will happen once the user clicks on the Add Item button on our UIAlert
+            self.choresArray.append(newChore)
+            saveItems()
+            loadItems()
+        }
     }
     
     
@@ -122,12 +146,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         } catch {
             print("Error loading item array, \(error)")
         }
+        choresTable.reloadData()
     }
     
-    func deleteItems(rowNumber: Int) {
-        context.delete(self.choresArray[rowNumber])
-        choresArray.remove(at: rowNumber)
-    }
+//    func deleteItems(rowNumber: Int) {
+//        context.delete(self.choresArray[rowNumber])
+//        choresArray.remove(at: rowNumber)
+//    }
     
     
 
