@@ -11,34 +11,23 @@ import CoreData
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, CanReceive {
 
+    
+
+    
+
     @IBOutlet weak var choresTable: UITableView!
     
     var choresArray = [Chore]()
-//DEL    var choreIdToPass : Int = 0
     var modeToPass : String = ""
     var choreRowToPass : Int = 0
     var choreTitleToPass : String = ""
-    
-    //choreImage
-    //choreMusic
-    //choreStartDate
-    //choreEndDate
-    //choreFrequency
-    //choreTimesPerDay
-    //choreReminderTime1
-    
-    var modePassedBack : String = ""
-    var choreIDPassedBack : Int = 0
-    var choresArrayRowPassedBack : Int = 0
-    var choreTitlePassedBack : String = ""
-    
-    //choreImage
-    //choreMusic
-    //choreStartDate
-    //choreEndDate
-    //choreFrequency
-    //choreTimesPerDay
-    //choreReminderTime1
+    var choreImageToPass : String = ""
+    var choreSoundToPass : String = ""
+    var choreFrequencyToPass : String = ""
+    var choreTimesPerDayToPass : Int16 = 0
+    var choreStartDateToPass : Date = Date.init()
+    var choreEndDateToPass : Date = Date.init()
+    var choreReminderTimesToPass = ["00:00","01:00","02:00"]
     
     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Chore.plist")
     
@@ -46,7 +35,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        //print ("###DATA FILE PATH \(dataFilePath)")
+
         // Set yourself as the delegate and datasource here:
         choresTable.delegate = self
         choresTable.dataSource = self
@@ -75,10 +65,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // populate details from selected chore
         modeToPass = "Update"
-        choreTitleToPass = choresArray[indexPath.row].ch_title!
-//DEL        choreIdToPass = Int(choresArray[indexPath.row].ch_choreId)
         choreRowToPass = indexPath.row
+        choreTitleToPass = choresArray[indexPath.row].ch_title!
+        choreSoundToPass = choresArray[indexPath.row].ch_sound!
+        choreImageToPass = choresArray[indexPath.row].ch_image!
+        choreFrequencyToPass = choresArray[indexPath.row].sh_frequency!
+        choreTimesPerDayToPass = choresArray[indexPath.row].sh_timesPerDay
+        choreStartDateToPass = choresArray[indexPath.row].sh_startDate!
+        choreEndDateToPass = choresArray[indexPath.row].sh_endDate!
+        choreReminderTimesToPass = choresArray[indexPath.row].sh_reminderTimes as! [String]
         
+        print("####### Chore Reminder Times To Pass \(choreReminderTimesToPass[0])")
         // perform segue to ChoreDetailsController
         self.performSegue(withIdentifier: "goToChoreDetails", sender: self)
     }
@@ -86,8 +83,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     @IBAction func addNewButtonPressed(_ sender: Any) {
         modeToPass = "New"
-        choreTitleToPass = "Enter chore title here"
         choreRowToPass = 0
+        choreTitleToPass = ""
+        choreSoundToPass = ""
+        choreImageToPass = ""
+        choreFrequencyToPass = ""
+        choreTimesPerDayToPass = 0
+        choreStartDateToPass = Date.init()
+        choreEndDateToPass = Date.init()
+        choreReminderTimesToPass = ["08:00","12:00","16:00"]
     }
     
     
@@ -95,33 +99,53 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
      override func prepare(for segue: UIStoryboardSegue, sender: Any?){
         let destinationVC = segue.destination as! ChoreDetailsController
         destinationVC.modePassOver = modeToPass
-        destinationVC.choreTitlePassOver = choreTitleToPass
-//DEL        destinationVC.choreIDPassOver = choreIdToPass
         destinationVC.choreRowPassOver = choreRowToPass
+        destinationVC.choreTitlePassOver = choreTitleToPass
+        destinationVC.choreSoundPassOver = choreSoundToPass
+        destinationVC.choreImagePassOver = choreImageToPass
+        destinationVC.choreFrequencyPassOver = choreFrequencyToPass
+        destinationVC.timesPerDayPassOver = choreTimesPerDayToPass
+        destinationVC.choreStartDatePassOver = choreStartDateToPass
+        destinationVC.choreEndDatePassOver = choreEndDateToPass
+        destinationVC.choreReminderTimesPassOver = choreReminderTimesToPass
         destinationVC.backscreen = self
     }
     
-    func dataReceived(mode: String, title: String, row_id: Int) {
-        print("Data received back: \(mode) and \(title) and \(row_id)")
-//DEL        choreTitlePassedBack = data
-//DEL        choresArrayRowPassedBack = row_id
+    
+    func dataReceived(mode: String, row_id: Int, title: String, sound: String, image: String, frequency: String, timesPerDay: Int16, startDate: Date, endDate: Date, reminderTimes: [String]) {
+        
         if mode == "Update" {
             let request : NSFetchRequest<Chore> = Chore.fetchRequest()
             do {
                 let test = try context.fetch(request)
                 let objectUpdate = test[row_id] as NSManagedObject
                 objectUpdate.setValue(title, forKey: "ch_title")
+                objectUpdate.setValue(sound, forKey: "ch_sound")
+                objectUpdate.setValue(image, forKey: "ch_image")
+                objectUpdate.setValue(frequency, forKey: "sh_frequency")
+                objectUpdate.setValue(timesPerDay, forKey: "sh_timesPerDay")
+                objectUpdate.setValue(startDate, forKey: "sh_startDate")
+                objectUpdate.setValue(endDate, forKey: "sh_endDate")
+                objectUpdate.setValue(reminderTimes as NSObject, forKey: "sh_reminderTimes")
+
             } catch {
                 print ("Error updating record \(error)")
             }
-        
             saveItems()
             loadItems()
+            
         } else {
             let newChore = Chore(context: self.context)
             newChore.ch_title = title
-            newChore.ch_choreId = 1234
             newChore.sh_suspended = false
+            newChore.ch_sound = sound
+            newChore.ch_image = image
+            newChore.sh_frequency = frequency
+            newChore.sh_timesPerDay = Int16(timesPerDay)
+            newChore.sh_startDate = startDate
+            newChore.sh_endDate = endDate
+            newChore.sh_reminderTimes = reminderTimes as NSObject
+            
             //what will happen once the user clicks on the Add Item button on our UIAlert
             self.choresArray.append(newChore)
             saveItems()
@@ -154,33 +178,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 //        choresArray.remove(at: rowNumber)
 //    }
     
-    
-
-    
-    //    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
-    //        var newToDo = UITextField()
-    //        let alert = UIAlertController(title: "Add New Todoey Item", message: "", preferredStyle: .alert)
-    //        let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
-    //
-    //            let newToDoItem = ToDoItem(context: self.context)
-    //            newToDoItem.title = newToDo.text!
-    //            newToDoItem.done = false
-    //
-    //            //what will happen once the user clicks on the Add Item button on our UIAlert
-    //            self.itemArray.append(newToDoItem)
-    //            self.tableView.reloadData()
-    //            self.saveItems()
-    //        }
-    //
-    //        alert.addTextField { (alertTextField) in
-    //            alertTextField.placeholder = "Create new item"
-    //            newToDo = alertTextField
-    //        }
-    //
-    //        alert.addAction(action)
-    //        present(alert, animated: true, completion: nil)
-    //
-    //    }
 
 }
 
