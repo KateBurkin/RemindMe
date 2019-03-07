@@ -8,12 +8,9 @@
 
 import UIKit
 import CoreData
+import NWPusher
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, CanReceive {
-
-    
-
-    
 
     @IBOutlet weak var choresTable: UITableView!
     
@@ -38,15 +35,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         //print ("###DATA FILE PATH \(dataFilePath)")
 
         // Set yourself as the delegate and datasource here:
-        choresTable.delegate = self
-        choresTable.dataSource = self
+        self.choresTable.delegate = self
+        self.choresTable.dataSource = self
         
         // load up the array from user preferences (if we stored something in the file)
         choresTable.rowHeight = 50.0
         loadItems()
-        
-        //print (dataFilePath)
-        choresTable.reloadData()
+        //choresTable.reloadData()
     }
 
     
@@ -75,7 +70,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         choreEndDateToPass = choresArray[indexPath.row].sh_endDate!
         choreReminderTimesToPass = choresArray[indexPath.row].sh_reminderTimes as! [String]
         
-        print("####### Chore Reminder Times To Pass \(choreReminderTimesToPass[0])")
         // perform segue to ChoreDetailsController
         self.performSegue(withIdentifier: "goToChoreDetails", sender: self)
     }
@@ -127,7 +121,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 objectUpdate.setValue(startDate, forKey: "sh_startDate")
                 objectUpdate.setValue(endDate, forKey: "sh_endDate")
                 objectUpdate.setValue(reminderTimes as NSObject, forKey: "sh_reminderTimes")
-
             } catch {
                 print ("Error updating record \(error)")
             }
