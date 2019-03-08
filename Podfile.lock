@@ -1,0 +1,16 @@
+PODS:
+  - NWPusher (0.7.5)
+
+DEPENDENCIES:
+  - NWPusher
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - NWPusher
+
+SPEC CHECKSUMS:
+  NWPusher: 9b29a44754d88cb02c28a1e9bc8750845506123e
+
+PODFILE CHECKSUM: 400b3cc0037f3deb573cc41afb625f667ca4ae4a
+
+COCOAPODS: 1.5.3

@@ -8,9 +8,9 @@
 
 import UIKit
 import CoreData
-import NWPusher
+import UserNotifications
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, CanReceive {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UNUserNotificationCenterDelegate, CanReceive {
 
     @IBOutlet weak var choresTable: UITableView!
     
@@ -149,6 +149,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //MARK: MODEL MANIPULATION METHODS
     func saveItems() {
+        scheduleNotification()
         do {
             try context.save()
         } catch {
@@ -171,6 +172,65 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 //        choresArray.remove(at: rowNumber)
 //    }
     
+    func scheduleNotification(){
+
+        let notificationCenter = UNUserNotificationCenter.current()
+        notificationCenter.getNotificationSettings { (settings) in
+            // Do not schedule notifications if not authorized.
+            guard settings.authorizationStatus == .authorized else {
+                print ("Permission not granted")
+                return}
+            
+            // Remove all previous notifications
+            notificationCenter.getPendingNotificationRequests { (notifications) in
+                print("Original Count: \(notifications.count)")
+                for item in notifications {
+                    notificationCenter.removePendingNotificationRequests(withIdentifiers: [item.identifier])
+                }
+            }
+            
+            let content = UNMutableNotificationContent()
+            content.title = "Weekly Staff Meeting"
+            content.body = "Every Tuesday at 2pm"
+            //content.sound = dog_bark4.wav
+            
+            // Configure the recurring date.
+            var dateComponents = DateComponents()
+            dateComponents.calendar = Calendar.current
+            
+            dateComponents.weekday = 4  // Friday
+            dateComponents.hour = 14    // 14:00 hours
+            dateComponents.minute = 40    // 14:00 hours
+            
+            // Create the trigger as a repeating event.
+            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+            
+            // Create the request
+            let uuidString = UUID().uuidString
+            let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
+            
+            // Schedule the request with the system.
+            let notificationCenter = UNUserNotificationCenter.current()
+            notificationCenter.add(request) { (error) in
+                if error != nil {
+                    // Handle any errors.
+                }
+            }
+            
+            // Remove all previous notifications
+            notificationCenter.getPendingNotificationRequests { (notifications) in
+                print("New Count: \(notifications.count)")
+                for item in notifications {
+                    print("Item identifier \(item.identifier)")
+                    print("Item identifier \(String(describing: item.trigger))")
+                    //notificationCenter.removePendingNotificationRequests(withIdentifiers: [item.identifier])
+                }
+                print("Next notification date \(String(describing: trigger.nextTriggerDate()))")
+
+            }
+            
+        }
+    }
 
 }
 
