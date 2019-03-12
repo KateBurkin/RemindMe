@@ -25,6 +25,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var choreStartDateToPass : Date = Date.init()
     var choreEndDateToPass : Date = Date.init()
     var choreReminderTimesToPass = ["00:00","01:00","02:00"]
+    var choreReminderID : String = ""
     
     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Chore.plist")
     
@@ -32,7 +33,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //print ("###DATA FILE PATH \(dataFilePath)")
+        print ("###DATA FILE PATH \(dataFilePath)")
 
         // Set yourself as the delegate and datasource here:
         self.choresTable.delegate = self
@@ -41,7 +42,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // load up the array from user preferences (if we stored something in the file)
         choresTable.rowHeight = 50.0
         loadItems()
-        //choresTable.reloadData()
     }
 
     
@@ -52,7 +52,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = choresTable.dequeueReusableCell(withIdentifier: "choreItemCell", for: indexPath)
-        cell.textLabel?.text = choresArray[indexPath.row].ch_title
+        cell.textLabel!.text = choresArray[indexPath.row].ch_title!
         return cell
     }
     
@@ -69,6 +69,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         choreStartDateToPass = choresArray[indexPath.row].sh_startDate!
         choreEndDateToPass = choresArray[indexPath.row].sh_endDate!
         choreReminderTimesToPass = choresArray[indexPath.row].sh_reminderTimes as! [String]
+        choreReminderID = choresArray[indexPath.row].tr_reminderID!
         
         // perform segue to ChoreDetailsController
         self.performSegue(withIdentifier: "goToChoreDetails", sender: self)
@@ -107,7 +108,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     
     func dataReceived(mode: String, row_id: Int, title: String, sound: String, image: String, frequency: String, timesPerDay: Int16, startDate: Date, endDate: Date, reminderTimes: [String]) {
-        
+
+        var savedRow_id = row_id
+
         if mode == "Update" {
             let request : NSFetchRequest<Chore> = Chore.fetchRequest()
             do {
@@ -124,9 +127,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             } catch {
                 print ("Error updating record \(error)")
             }
-            saveItems()
-            loadItems()
-            
         } else {
             let newChore = Chore(context: self.context)
             newChore.ch_title = title
@@ -138,18 +138,31 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             newChore.sh_startDate = startDate
             newChore.sh_endDate = endDate
             newChore.sh_reminderTimes = reminderTimes as NSObject
-            
-            //what will happen once the user clicks on the Add Item button on our UIAlert
             self.choresArray.append(newChore)
-            saveItems()
-            loadItems()
+            savedRow_id = choresArray.count - 1
         }
+        saveItems()
+        
+        let dc = Scheduler().scheduleDate(reminderTimeArray: reminderTimes, startDate: startDate, endDate: endDate, frequency: frequency, weekDaysArray: [4])
+        let (notificationDate, notificationID) = Scheduler().scheduleNotification(dateComponents: dc, title: "Your reminder", body: title, reminderID: choreReminderID)
+
+        let request : NSFetchRequest<Chore> = Chore.fetchRequest()
+        do {
+            let test = try context.fetch(request)
+            let objectUpdate = test[savedRow_id] as NSManagedObject
+            objectUpdate.setValue(notificationID, forKey: "tr_reminderID")
+            objectUpdate.setValue(notificationDate, forKey: "tr_nextReminder")
+        } catch {
+            print ("Error updating record \(error)")
+        }
+        
+        saveItems()
+        loadItems()
     }
     
     
     //MARK: MODEL MANIPULATION METHODS
     func saveItems() {
-        scheduleNotification()
         do {
             try context.save()
         } catch {
@@ -171,66 +184,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 //        context.delete(self.choresArray[rowNumber])
 //        choresArray.remove(at: rowNumber)
 //    }
+
     
-    func scheduleNotification(){
-
-        let notificationCenter = UNUserNotificationCenter.current()
-        notificationCenter.getNotificationSettings { (settings) in
-            // Do not schedule notifications if not authorized.
-            guard settings.authorizationStatus == .authorized else {
-                print ("Permission not granted")
-                return}
-            
-            // Remove all previous notifications
-            notificationCenter.getPendingNotificationRequests { (notifications) in
-                print("Original Count: \(notifications.count)")
-                for item in notifications {
-                    notificationCenter.removePendingNotificationRequests(withIdentifiers: [item.identifier])
-                }
-            }
-            
-            let content = UNMutableNotificationContent()
-            content.title = "Weekly Staff Meeting"
-            content.body = "Every Tuesday at 2pm"
-            //content.sound = dog_bark4.wav
-            
-            // Configure the recurring date.
-            var dateComponents = DateComponents()
-            dateComponents.calendar = Calendar.current
-            
-            dateComponents.weekday = 4  // Friday
-            dateComponents.hour = 14    // 14:00 hours
-            dateComponents.minute = 40    // 14:00 hours
-            
-            // Create the trigger as a repeating event.
-            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
-            
-            // Create the request
-            let uuidString = UUID().uuidString
-            let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
-            
-            // Schedule the request with the system.
-            let notificationCenter = UNUserNotificationCenter.current()
-            notificationCenter.add(request) { (error) in
-                if error != nil {
-                    // Handle any errors.
-                }
-            }
-            
-            // Remove all previous notifications
-            notificationCenter.getPendingNotificationRequests { (notifications) in
-                print("New Count: \(notifications.count)")
-                for item in notifications {
-                    print("Item identifier \(item.identifier)")
-                    print("Item identifier \(String(describing: item.trigger))")
-                    //notificationCenter.removePendingNotificationRequests(withIdentifiers: [item.identifier])
-                }
-                print("Next notification date \(String(describing: trigger.nextTriggerDate()))")
-
-            }
-            
-        }
-    }
-
 }
 

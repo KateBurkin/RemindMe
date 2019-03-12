@@ -11,198 +11,225 @@ import UserNotifications
 
 class Scheduler {
     
-    func scheduler (){
-//SET DATE and TIME Formatters
-let dateFormatter = DateFormatter()
-dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm"
-let timeFormatter = DateFormatter()
-timeFormatter.dateFormat = "HH:mm"
-
-//TODAY'S DATE
-let todayDate : Date = Date.init()
-
-
-
-//SET UP START AND END DATES - this would be replaced with real values from DB
-let reminderTimeString : String = "12:45"
-let weekDay : Int = 4
-var startDate : Date = dateFormatter.date(from: "2019-02-09T\(reminderTimeString)")!
-var endDate : Date = dateFormatter.date(from: "2020-03-09T\(reminderTimeString)")!
-
-print ("StartDate \(String(describing: startDate))  EndDate \(String(describing: endDate))")
-
-// set Reminder Time
-let reminderTime = timeFormatter.date(from: reminderTimeString)
-
-// SCHEDULING DAILY REMINDER
-//1. Check that we're not past the endDate
-if todayDate > endDate {
-    print("schedule ended")
-    
-} else {
-    
-    // Configure the recurring date.
-    var dateComponents = DateComponents()
-    dateComponents.calendar = Calendar.current
-    var dateComponentsWk = DateComponents()
-    dateComponentsWk.calendar = Calendar.current
-    var dateComponentsFn = DateComponents()
-    dateComponentsFn.calendar = Calendar.current
-    
-    // DAILY NEXT REMINDER
-    if todayDate < startDate {
+    func scheduleNotification(dateComponents:DateComponents, title:String, body:String, reminderID: String?="") -> (Date, String) {
+        var returnDate : Date = Date.init()
+        var returnTriggerID : String = ""
         
-        let components = Calendar.current.dateComponents([.day, .month, .year], from: startDate)
-        let reminderComp = Calendar.current.dateComponents([.hour, .minute], from: reminderTime!)
+        let notificationCenter = UNUserNotificationCenter.current()
         
-        // assign date components for the trigger
-        dateComponents.timeZone = Calendar.current.timeZone
-        dateComponents.day = components.day!
-        dateComponents.month = components.month!
-        dateComponents.year = components.year!
-        dateComponents.hour = reminderComp.hour!
-        dateComponents.minute = reminderComp.minute!
-        
-        // Create the trigger as a repeating event.
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-        
-        print("Next notification date \(String(describing: trigger.nextTriggerDate()))")
-    } else {
-        //set reminder to today's reminder time
-        let components = Calendar.current.dateComponents([.day, .month, .year], from: todayDate)
-        let reminderComp = Calendar.current.dateComponents([.hour, .minute], from: reminderTime!)
-        let nowTimeComp =  Calendar.current.dateComponents([.hour, .minute], from: todayDate)
-        
-        if nowTimeComp.hour! > reminderComp.hour!{
-            dateComponents.day = components.day!+1
-        } else {
-            dateComponents.day = components.day!
+        //1. Verify that permission for notifications has been granted
+        notificationCenter.getNotificationSettings { (settings) in
+        // Do not schedule notifications if not authorized.
+        guard settings.authorizationStatus == .authorized else {
+            print ("Permission not granted")
+            return}
         }
         
-        // assign date components for the trigger
-        dateComponents.timeZone = Calendar.current.timeZone
-        dateComponents.month = components.month!
-        dateComponents.year = components.year!
-        dateComponents.hour = reminderComp.hour!
-        dateComponents.minute = reminderComp.minute!
+        //2. Remove existing notification if it was passed
+        if reminderID != "" {
+            notificationCenter.removePendingNotificationRequests(withIdentifiers: [reminderID!])
+        }
         
-        // Create the trigger as a repeating event.
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-        
+        //2. Create the trigger
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+        returnDate = trigger.nextTriggerDate()!
         print("Next notification date \(String(describing: trigger.nextTriggerDate()))")
+        print("Return Date \(returnDate)")
+            
+        //4. Create the request
+        let uuidString = UUID().uuidString
+        returnTriggerID = uuidString as String
+        print("Return Trigger ID \(returnTriggerID)")
         
+            //4b. Set content of notification
+            let content = UNMutableNotificationContent()
+            content.title = title
+            content.body = body
+            content.userInfo = ["REMINDER_ID" : returnTriggerID]
+            content.categoryIdentifier = "REMINDER_ACTIONS"
+//            let attachment = try! UNNotificationAttachment(identifier: "image", url: url!, options: [:])
+//            content.attachments = [attachment]
+//        
+//            content.attachments = UIImage(named: "binicon.png")
+        
+        let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
+            
+        //5. Schedule the request with the system.
+        notificationCenter.add(request) { (error) in
+                    if error != nil {
+                        print ("Error adding request")
+                    }
+            }
+        
+        notificationCenter.getPendingNotificationRequests { (notifications) in
+            print("Notification Count: \(notifications.count)")
+        }
+        
+        return (returnDate, returnTriggerID)
     }
     
-    // WEEKLY NEXT REMINDER
-    if todayDate < startDate {
+    func scheduleDate (reminderTimeArray : [String], startDate : Date, endDate : Date, frequency : String, weekDaysArray : [Int]) -> DateComponents {
+        //1. Initialise variables and formatters
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm"
         
-        let components = Calendar.current.dateComponents([.day, .month, .year, .weekday], from: startDate)
-        var daysIncrement : Int = 0
-        let reminderComp = Calendar.current.dateComponents([.hour, .minute], from: reminderTime!)
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateFormat = "HH:mm"
         
-        // Find next weekday interval from start date
-        if components.weekday! > weekDay {
-            daysIncrement = (7 - components.weekday!+weekDay)
-        } else if components.weekday! < weekDay {
-            daysIncrement = (weekDay - components.weekday!)
-        }
+        var dateComponents = DateComponents()
+        dateComponents.calendar = Calendar.current
         
+        let todayDate : Date = Date.init() //Initialise today's date
+        let nowTimeString = timeFormatter.string(from: todayDate)
         
-        // assign date components for the trigger
-        dateComponentsWk.day = components.day!+daysIncrement
-        dateComponentsWk.month = components.month!
-        dateComponentsWk.year = components.year!
-        dateComponentsWk.weekday = weekDay
-        dateComponentsWk.hour = reminderComp.hour!
-        dateComponentsWk.minute = reminderComp.minute!
+        let todayComponents = Calendar.current.dateComponents([.day, .month, .year, .hour, .minute, .weekday, .weekOfYear], from: todayDate)
+        let startDateComponents = Calendar.current.dateComponents([.day, .month, .year, .hour, .minute, .weekday, .weekOfYear], from: startDate)
         
-        // Create the trigger as a repeating event.
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponentsWk, repeats: false)
+        var reminderTime = timeFormatter.date(from: reminderTimeArray[0]) // set Reminder Time
+        var reminderComponents = Calendar.current.dateComponents([.hour, .minute], from: reminderTime!)
         
-        print("Next notification date \(String(describing: trigger.nextTriggerDate()))")
-        
-    } else {
-        let reminderComp = Calendar.current.dateComponents([.hour, .minute], from: reminderTime!)
-        
-        // assign date components for the trigger
-        dateComponentsWk.weekday = weekDay
-        dateComponentsWk.hour = reminderComp.hour!
-        dateComponentsWk.minute = reminderComp.minute!
-        
-        // Create the trigger as a repeating event.
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponentsWk, repeats: false)
-        
-        print("Next notification date \(String(describing: trigger.nextTriggerDate()))")
-        
-    }
-    
-    // FORTNIGHTLY NEXT REMINDER
-    if todayDate < startDate {
-        
-        let components = Calendar.current.dateComponents([.day, .month, .year, .weekday], from: startDate)
-        var daysIncrement : Int = 0
-        let reminderComp = Calendar.current.dateComponents([.hour, .minute], from: reminderTime!)
-        
-        // Find next weekday interval from start date
-        if components.weekday! > weekDay {
-            daysIncrement = (7 - components.weekday!+weekDay)
-        } else if components.weekday! < weekDay {
-            daysIncrement = (weekDay - components.weekday!)
-        }
+        var dayIncrement : Int = 0
         
         
-        // assign date components for the trigger
-        dateComponentsFn.day = components.day!+daysIncrement
-        dateComponentsFn.month = components.month!
-        dateComponentsFn.year = components.year!
-        dateComponentsFn.weekday = weekDay
-        dateComponentsFn.hour = reminderComp.hour!
-        dateComponentsFn.minute = reminderComp.minute!
-        
-        // Create the trigger as a repeating event.
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponentsFn, repeats: false)
-        
-        print("Next notification date \(String(describing: trigger.nextTriggerDate()))")
-        
-    } else {
-        
-        let components = Calendar.current.dateComponents([.day, .month, .year, .weekday, .weekOfYear], from: startDate)
-        let componentsToday = Calendar.current.dateComponents([.day, .month, .year, .weekday, .weekOfYear], from: todayDate)
-        let reminderComp = Calendar.current.dateComponents([.hour, .minute], from: reminderTime!)
-        
-        let result : Int = Int(components.weekOfYear!).remainderReportingOverflow(dividingBy: 2).partialValue
-        let result2 : Int = Int(componentsToday.weekOfYear!).remainderReportingOverflow(dividingBy: 2).partialValue
-        if result != result2 {
-            // assign date components for the trigger
-            dateComponentsFn.weekday = weekDay
-            dateComponentsFn.weekOfYear = componentsToday.weekOfYear!+1
-            dateComponentsFn.hour = reminderComp.hour!
-            dateComponentsFn.minute = reminderComp.minute!
+        //2. Check that schedule is not past the endDate
+        if todayDate > endDate {
+            print("schedule ended \(dateComponents)")
+            return dateComponents
             
         } else {
-            if componentsToday.weekday! > weekDay {
-                // assign date components for the trigger
-                dateComponentsFn.weekday = weekDay
-                dateComponentsFn.weekOfYear = componentsToday.weekOfYear!+2
-                dateComponentsFn.hour = reminderComp.hour!
-                dateComponentsFn.minute = reminderComp.minute!
-            } else {
-                // assign date components for the trigger
-                dateComponentsFn.weekday = weekDay
-                dateComponentsFn.weekOfYear = componentsToday.weekOfYear!
-                dateComponentsFn.hour = reminderComp.hour!
-                dateComponentsFn.minute = reminderComp.minute!
+            
+            //2. Determine Schedule based on frequency
+            switch frequency {
+            case "daily":
+                if todayDate < startDate {
+                    // assign start Date for the trigger
+                    dateComponents.day = startDateComponents.day!
+                    dateComponents.month = startDateComponents.month!
+                    dateComponents.year = startDateComponents.year!
+                    dateComponents.hour = reminderComponents.hour!
+                    dateComponents.minute = reminderComponents.minute!
+                } else {
+                    // find next reminder time by comparing with current time
+                    for tt in reminderTimeArray {
+                        if tt > nowTimeString {
+                            reminderTime = timeFormatter.date(from: tt)
+                            reminderComponents = Calendar.current.dateComponents([.hour, .minute], from: reminderTime!)
+                            dayIncrement = 0
+                            break
+                        } else {
+                            dayIncrement = 1
+                        }
+                    }
+                    // assign date components for the trigger
+                    dateComponents.day = todayComponents.day!+dayIncrement
+                    dateComponents.month = todayComponents.month!
+                    dateComponents.year = todayComponents.year!
+                    dateComponents.hour = reminderComponents.hour!
+                    dateComponents.minute = reminderComponents.minute!
+                }
+                
+                
+            case "weekly":
+                if todayDate < startDate {
+                    // Find next nominated weekday from start date
+                    if startDateComponents.weekday! > weekDaysArray[0] {
+                        dayIncrement = (7 - startDateComponents.weekday!+weekDaysArray[0])
+                    } else if startDateComponents.weekday! < weekDaysArray[0] {
+                        dayIncrement = (weekDaysArray[0] - startDateComponents.weekday!)
+                    }
+                    
+                    // assign date components for the trigger
+                    dateComponents.day = startDateComponents.day!+dayIncrement
+                    dateComponents.month = startDateComponents.month!
+                    dateComponents.year = startDateComponents.year!
+                    dateComponents.weekday = weekDaysArray[0]
+                    dateComponents.hour = reminderComponents.hour!
+                    dateComponents.minute = reminderComponents.minute!
+                    
+                } else {
+                    // the reminder is due today need to find next reminder time
+                    if todayComponents.weekday! == weekDaysArray[0] {
+                        for tt in reminderTimeArray {
+                            if tt > nowTimeString {
+                                reminderTime = timeFormatter.date(from: tt)
+                                reminderComponents = Calendar.current.dateComponents([.hour, .minute], from: reminderTime!)
+                                break
+                            }
+                        }
+                    }
+                    // assign date components for the trigger
+                    dateComponents.weekday = weekDaysArray[0]
+                    dateComponents.hour = reminderComponents.hour!
+                    dateComponents.minute = reminderComponents.minute!
+                }
+                
+                
+                
+            case "fortnightly":
+                if todayDate < startDate {
+                    // Find next weekday interval from start date
+                    if startDateComponents.weekday! > weekDaysArray[0] {
+                        dayIncrement = (7 - startDateComponents.weekday!+weekDaysArray[0])
+                    } else if startDateComponents.weekday! < weekDaysArray[0] {
+                        dayIncrement = (weekDaysArray[0] - startDateComponents.weekday!)
+                    }
+                    
+                    // assign date components for the trigger
+                    dateComponents.day = startDateComponents.day!+dayIncrement
+                    dateComponents.month = startDateComponents.month!
+                    dateComponents.year = startDateComponents.year!
+                    dateComponents.weekday = weekDaysArray[0]
+                    dateComponents.hour = reminderComponents.hour!
+                    dateComponents.minute = reminderComponents.minute!
+                    
+                } else {
+                    // the reminder is due today need to find next reminder time
+                    if startDateComponents.weekday! == weekDaysArray[0] {
+                        // find next reminder time for today
+                        for tt in reminderTimeArray {
+                            if tt > nowTimeString {
+                                reminderTime = timeFormatter.date(from: tt)
+                                reminderComponents = Calendar.current.dateComponents([.hour, .minute], from: reminderTime!)
+                                break
+                            }
+                        }
+                    }
+                    
+                    let result : Int = Int(startDateComponents.weekOfYear!).remainderReportingOverflow(dividingBy: 2).partialValue
+                    let result2 : Int = Int(todayComponents.weekOfYear!).remainderReportingOverflow(dividingBy: 2).partialValue
+                    if result != result2 {
+                        // assign date components for the trigger
+                        dateComponents.weekday = weekDaysArray[0]
+                        dateComponents.weekOfYear = todayComponents.weekOfYear!+1
+                        dateComponents.hour = reminderComponents.hour!
+                        dateComponents.minute = reminderComponents.minute!
+                        
+                    } else {
+                        if todayComponents.weekday! > weekDaysArray[0] {
+                            // assign date components for the trigger
+                            dateComponents.weekday = weekDaysArray[0]
+                            dateComponents.weekOfYear = todayComponents.weekOfYear!+2
+                            dateComponents.hour = reminderComponents.hour!
+                            dateComponents.minute = reminderComponents.minute!
+                        } else {
+                            // assign date components for the trigger
+                            dateComponents.weekday = weekDaysArray[0]
+                            dateComponents.weekOfYear = todayComponents.weekOfYear!
+                            dateComponents.hour = reminderComponents.hour!
+                            dateComponents.minute = reminderComponents.minute!
+                        }
+                    }
+                }
+                
+            default:
+                print ("Error")
             }
+            
         }
         
-        // Create the trigger as a repeating event.
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponentsFn, repeats: false)
+        print("schedule determined as \(dateComponents)")
+        return dateComponents
         
-        print("Next notification date \(String(describing: trigger.nextTriggerDate()))")
     }
-    
-}
 
-
-    }
 }

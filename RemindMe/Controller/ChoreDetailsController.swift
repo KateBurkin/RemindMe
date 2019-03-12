@@ -29,6 +29,12 @@ class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableView
     @IBOutlet weak var choreFrequency: UITextField!
     @IBOutlet weak var choreTimesPerDay: UITextField!
     
+    //Temp text fields for reminder timers
+    @IBOutlet var NotificationTime1: UITextField!
+    @IBOutlet var NotificationTime2: UITextField!
+    @IBOutlet var NotificationTime3: UITextField!
+    
+    
     @IBOutlet var reminderTimesTable: UITableView!
     
     //Date and Text Pickers
@@ -36,10 +42,13 @@ class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableView
     private var textPickerFrequency = UIPickerView()
     private var textPickerTimesPerDay = UIPickerView()
     private var textPickerMode : String = ""
-
+    private var timePicker1 : UIDatePicker?
+    private var timePicker2 : UIDatePicker?
+    private var timePicker3 : UIDatePicker?
     
-    var frequencyArray = ["daily", "weekly", "fortnightly", "monthly"]
-    var timesPerDay = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]
+    var frequencyArray = ["daily", "weekly", "fortnightly"]
+    var timesPerDay = [1,2,3]
+    var weekdaysArray = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
     
     //Segue Protocol
     var backscreen : CanReceive?
@@ -69,7 +78,10 @@ class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableView
         choreTimesPerDay.text = String(timesPerDayPassOver)
         choreStartDate.text = formatDate(passedDate: choreStartDatePassOver)
         choreEndDAte.text = formatDate(passedDate: choreEndDatePassOver)
-    
+        
+        // sort reminder times array before loading into the table
+        choreReminderTimesPassOver.sort()
+        
         textPickerFrequency.delegate = self
         textPickerFrequency.dataSource = self
         textPickerTimesPerDay.delegate = self
@@ -79,15 +91,28 @@ class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableView
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(ChoreDetailsController.viewTapped(gestureRecogniser:)))
         view.addGestureRecognizer(tapGesture)
         
+        
+        
+        
         // Set yourself as the delegate and datasource here:
         self.reminderTimesTable.delegate = self
         self.reminderTimesTable.dataSource = self
         reminderTimesTable.allowsSelection = true
-       
-        
-        // load up the array from user preferences (if we stored something in the file)
         self.reminderTimesTable.rowHeight = 30.0
         reminderTimesTable.reloadData()
+        
+        // load notification times to temp text boxes
+        loadNotificationTimes()
+
+    }
+    
+    func loadNotificationTimes() {
+//        choreReminderTimesPassOver.forEach { tt in
+//        }
+        
+        NotificationTime1.text = choreReminderTimesPassOver[0]
+        NotificationTime2.text = choreReminderTimesPassOver[1]
+        NotificationTime3.text = choreReminderTimesPassOver[2]
         
         
     }
@@ -142,25 +167,58 @@ class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableView
         choreEndDatePassOver = datePicker.date
     }
     
-    
-//    @IBAction func timeOfNotificationPressed(_ sender: UITextField) {
-//        datePicker = UIDatePicker()
-//        datePicker?.datePickerMode = .time
-//        //datePicker?.date = choreEndDatePassOver
-//        let selectedDate = datePicker?.addTarget(self, action:
-//            #selector(ChoreDetailsController.notificationTimeChanged(datePicker:)), for:  .valueChanged)
-//        choreTimeOfNotification.inputView = datePicker
-//    }
-    
-//    @objc func notificationTimeChanged(datePicker: UIDatePicker){
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "HH:mm"
-//        choreTimeOfNotification.text = dateFormatter.string(from: datePicker.date)
-//        //choreEndDatePassOver = datePicker.date
-//    }
-    
-    
 
+    //MARK: - REMINDER TIME PICKERS
+    
+    @IBAction func Notification1Pressed(_ sender: Any) {
+        print ("Notification 1 pressed")
+        timePicker1 = UIDatePicker()
+        timePicker1?.datePickerMode = .time
+        let selectedDate = timePicker1?.addTarget(self, action:
+            #selector(ChoreDetailsController.notification1TimeChanged(datePicker:)), for:  .valueChanged)
+        NotificationTime1.inputView = timePicker1
+    }
+    
+    @objc func notification1TimeChanged(datePicker: UIDatePicker){
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH:mm"
+        NotificationTime1.text = dateFormatter.string(from: datePicker.date)
+        choreReminderTimesPassOver[0] = dateFormatter.string(from: datePicker.date)
+    }
+    
+    
+    @IBAction func Notification2Pressed(_ sender: Any) {
+        print ("Notification 2 pressed")
+        timePicker2 = UIDatePicker()
+        timePicker2?.datePickerMode = .time
+        let selectedDate = timePicker2?.addTarget(self, action:
+            #selector(ChoreDetailsController.notification2TimeChanged(datePicker:)), for:  .valueChanged)
+        NotificationTime2.inputView = timePicker2
+    }
+    
+    @objc func notification2TimeChanged(datePicker: UIDatePicker){
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH:mm"
+        NotificationTime2.text = dateFormatter.string(from: datePicker.date)
+        choreReminderTimesPassOver[1] = dateFormatter.string(from: datePicker.date)
+    }
+    
+    @IBAction func Notification3Pressed(_ sender: Any) {
+        print ("Notification 3 pressed")
+        timePicker3 = UIDatePicker()
+        timePicker3?.datePickerMode = .time
+        let selectedDate = timePicker3?.addTarget(self, action:
+            #selector(ChoreDetailsController.notification3TimeChanged(datePicker:)), for:  .valueChanged)
+        NotificationTime3.inputView = timePicker3
+    }
+    
+    @objc func notification3TimeChanged(datePicker: UIDatePicker){
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH:mm"
+        NotificationTime3.text = dateFormatter.string(from: datePicker.date)
+        choreReminderTimesPassOver[2] = dateFormatter.string(from: datePicker.date)
+    }
+    
     //MARK: - FREQUENCY AND TIMES PER DAY PICKERS
     @IBAction func frequencyPressed(_ sender: UITextField) {
         textPickerMode = "Frequency"
@@ -226,6 +284,8 @@ class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableView
     
     //MARK: SAVE BUTTON
     @IBAction func SaveButtonPressed(_ sender: UIButton) {
+        // sort reminder times array before saving
+        choreReminderTimesPassOver.sort()
         backscreen?.dataReceived(mode: modePassOver, row_id: choreRowPassOver, title: choreTitle.text!, sound: choreSound.text!, image: "image name text", frequency: choreFrequency.text!, timesPerDay: Int16(choreTimesPerDay.text!)!, startDate: choreStartDatePassOver, endDate: choreEndDatePassOver, reminderTimes: choreReminderTimesPassOver)
         dismiss(animated: true, completion: nil)
     }

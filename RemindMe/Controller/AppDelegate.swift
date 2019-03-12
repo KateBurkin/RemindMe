@@ -21,7 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         UNUserNotificationCenter.current().delegate = self
         registerForPushNotifications()
-
+        registerNotificationActions()
+        
         return true
     }
 
@@ -103,30 +104,91 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
     }
 
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        // 1. Convert device token to string
-        let tokenParts = deviceToken.map { data -> String in
-            return String(format: "%02.2hhx", data)
-        }
-        let token = tokenParts.joined()
-        // 2. Print device token to use for PNs payloads
-        print("Device Token: \(token)")
+    func registerNotificationActions () {
+        print ("Registering Notification Actions")
+        // Define the custom actions.
+        let snoozeAction = UNNotificationAction(identifier: "SNOOZE_ACTION", title: "Snooze", options: UNNotificationActionOptions(rawValue: 0))
+        let doneAction = UNNotificationAction(identifier: "DONE_ACTION", title: "Done", options: UNNotificationActionOptions(rawValue: 0))
+
+        // Define the notification type
+        let meetingInviteCategory = UNNotificationCategory(identifier: "REMINDER_ACTIONS", actions: [snoozeAction, doneAction], intentIdentifiers: [], hiddenPreviewsBodyPlaceholder: "", options: .customDismissAction)
+        
+        // Register the notification type.
+        let notificationCenter = UNUserNotificationCenter.current()
+        notificationCenter.setNotificationCategories([meetingInviteCategory])
     }
     
-    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        // 1. Print out error if PNs registration not successful
-        print("Failed to register for remote notifications with error: \(error)")
-    }
-
+    
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         
-        if response.actionIdentifier == "done" {
-            print("Handle done action identifier")
-        } else if response.actionIdentifier == "defer" {
-            print("Handle defer action identifier")
-        } else {
-            print("No custom action identifiers chosen")
+        // Get the meeting ID from the original notification.
+//        let userInfo = response.notification.request.content.userInfo
+//        let meetingID = userInfo["MEETING_ID"] as! String
+//        let userID = userInfo["USER_ID"] as! String
+        
+        // Perform the task associated with the action.
+        switch response.actionIdentifier {
+        case "SNOOZE_ACTION":
+            //sharedMeetingManager.acceptMeeting(user: userID,meetingID: meetingID)
+            print ("Snooze Action selected")
+            break
+            
+        case "DONE_ACTION":
+            print ("Done Action selected")
+            // Get the meeting ID from the original notification.
+            let userInfo = response.notification.request.content.userInfo
+
+            let reminderID = userInfo["REMINDER_ID"] as! String
+            
+            // Lookup the chore by notification ID
+            let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+            var choresArray = [Chore]()
+            let request : NSFetchRequest<Chore> = Chore.fetchRequest()
+            request.predicate = NSPredicate(format: "tr_reminderID CONTAINS[cd] %@", reminderID)
+
+            do {
+                choresArray = try context.fetch(request)
+            } catch {
+                print("Error loading item array, \(error)")
+            }
+            print ("Chores extracted from db \(choresArray.count) \(choresArray[0].ch_title)")
+            
+            if choresArray.count == 1 {
+                
+                // Reschedule next notification
+                let dc = Scheduler().scheduleDate(reminderTimeArray: choresArray[0].sh_reminderTimes as! [String], startDate: choresArray[0].sh_startDate!, endDate: choresArray[0].sh_endDate!, frequency: choresArray[0].sh_frequency!, weekDaysArray: [4])
+                let (notificationDate, notificationID) = Scheduler().scheduleNotification(dateComponents: dc, title: "Your reminder", body: choresArray[0].ch_title!, reminderID: reminderID)
+
+                print ("Next notification is set for: \(notificationDate) and ID is \(notificationID)")
+
+                //Update the reminder ID and next reminder date
+                do {
+                    let objectUpdate = choresArray[0] as NSManagedObject
+                    objectUpdate.setValue(notificationID, forKey: "tr_reminderID")
+                    objectUpdate.setValue(notificationDate, forKey: "tr_nextReminder")
+                } catch {
+                    print ("Error updating record \(error)")
+                }
+
+                //func save items
+                do {
+                    try context.save()
+                } catch {
+                    print("Error saving to Core Data, \(error)")
+                }
+            }
+            break
+            
+            // Handle other actions…
+            
+        default:
+            break
         }
+        
+        // Always call the completion handler when done.
+        completionHandler()
+
+        
     }
 }
 
