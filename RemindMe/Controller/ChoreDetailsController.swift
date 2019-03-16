@@ -14,8 +14,8 @@ protocol CanReceive {
     
 }
 
-class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPickerViewDelegate, UIPickerViewDataSource {
-    
+class ChoreDetailsController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+
     //Buttons
     @IBOutlet weak var cancelButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
@@ -63,7 +63,7 @@ class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableView
     var timesPerDayPassOver : Int16 = 0
     var choreStartDatePassOver : Date = Date.init()
     var choreEndDatePassOver : Date = Date.init()
-    var choreReminderTimesPassOver = ["00:00","01:00","02:00"]
+    var choreReminderTimesPassOver = [""]
 
     
     
@@ -79,6 +79,7 @@ class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableView
         choreStartDate.text = formatDate(passedDate: choreStartDatePassOver)
         choreEndDAte.text = formatDate(passedDate: choreEndDatePassOver)
         
+        
         // sort reminder times array before loading into the table
         choreReminderTimesPassOver.sort()
         
@@ -90,31 +91,23 @@ class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableView
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(ChoreDetailsController.viewTapped(gestureRecogniser:)))
         view.addGestureRecognizer(tapGesture)
-        
-        
-        
-        
-        // Set yourself as the delegate and datasource here:
-        self.reminderTimesTable.delegate = self
-        self.reminderTimesTable.dataSource = self
-        reminderTimesTable.allowsSelection = true
-        self.reminderTimesTable.rowHeight = 30.0
-        reminderTimesTable.reloadData()
-        
+    
         // load notification times to temp text boxes
         loadNotificationTimes()
 
     }
     
     func loadNotificationTimes() {
-//        choreReminderTimesPassOver.forEach { tt in
-//        }
-        
-        NotificationTime1.text = choreReminderTimesPassOver[0]
-        NotificationTime2.text = choreReminderTimesPassOver[1]
-        NotificationTime3.text = choreReminderTimesPassOver[2]
-        
-        
+        if choreReminderTimesPassOver.count == 3 {
+            NotificationTime1.text = choreReminderTimesPassOver[0]
+            NotificationTime2.text = choreReminderTimesPassOver[1]
+            NotificationTime3.text = choreReminderTimesPassOver[2]
+        } else if choreReminderTimesPassOver.count == 2 {
+            NotificationTime1.text = choreReminderTimesPassOver[0]
+            NotificationTime2.text = choreReminderTimesPassOver[1]
+        } else if choreReminderTimesPassOver.count == 1 {
+            NotificationTime1.text = choreReminderTimesPassOver[0]
+        }
     }
     
     func formatDate(passedDate: Date) -> String {
@@ -183,7 +176,7 @@ class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableView
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "HH:mm"
         NotificationTime1.text = dateFormatter.string(from: datePicker.date)
-        choreReminderTimesPassOver[0] = dateFormatter.string(from: datePicker.date)
+        //choreReminderTimesPassOver.insert(dateFormatter.string(from: datePicker.date), at: 0)
     }
     
     
@@ -200,8 +193,9 @@ class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableView
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "HH:mm"
         NotificationTime2.text = dateFormatter.string(from: datePicker.date)
-        choreReminderTimesPassOver[1] = dateFormatter.string(from: datePicker.date)
+        //choreReminderTimesPassOver.insert(dateFormatter.string(from: datePicker.date), at: 1)
     }
+
     
     @IBAction func Notification3Pressed(_ sender: Any) {
         print ("Notification 3 pressed")
@@ -210,13 +204,14 @@ class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableView
         let selectedDate = timePicker3?.addTarget(self, action:
             #selector(ChoreDetailsController.notification3TimeChanged(datePicker:)), for:  .valueChanged)
         NotificationTime3.inputView = timePicker3
+        
     }
+    
     
     @objc func notification3TimeChanged(datePicker: UIDatePicker){
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "HH:mm"
         NotificationTime3.text = dateFormatter.string(from: datePicker.date)
-        choreReminderTimesPassOver[2] = dateFormatter.string(from: datePicker.date)
     }
     
     //MARK: - FREQUENCY AND TIMES PER DAY PICKERS
@@ -263,30 +258,24 @@ class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableView
             choreTimesPerDay.text = String(timesPerDay[row])
         }
     }
-
-    
-    //MARK: - REMINDER TIME TABLE
-    func tableView(_ reminderTimesTable: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return choreReminderTimesPassOver.count
-    }
-
-    func tableView(_ reminderTimesTable: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = reminderTimesTable.dequeueReusableCell(withIdentifier: "reminderTimeCell", for: indexPath)
-        cell.textLabel?.text = choreReminderTimesPassOver[indexPath.row]
-        return cell
-    }
-    
-
-    func tableView(_ reminderTimesTable: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("row selected")
-    }
-   
     
     //MARK: SAVE BUTTON
     @IBAction func SaveButtonPressed(_ sender: UIButton) {
-        // sort reminder times array before saving
+        // reload the chore reminder times
+        choreReminderTimesPassOver = []
+        if NotificationTime1.text != nil && NotificationTime1.text != "" {
+            choreReminderTimesPassOver.append(NotificationTime1.text!)
+        }
+        if NotificationTime2.text != nil && NotificationTime2.text != "" {
+            choreReminderTimesPassOver.append(NotificationTime2.text!)
+        }
+        if NotificationTime3.text != nil && NotificationTime3.text != "" {
+            choreReminderTimesPassOver.append(NotificationTime3.text!)
+        }
         choreReminderTimesPassOver.sort()
-        backscreen?.dataReceived(mode: modePassOver, row_id: choreRowPassOver, title: choreTitle.text!, sound: choreSound.text!, image: "image name text", frequency: choreFrequency.text!, timesPerDay: Int16(choreTimesPerDay.text!)!, startDate: choreStartDatePassOver, endDate: choreEndDatePassOver, reminderTimes: choreReminderTimesPassOver)
+        
+        
+        backscreen?.dataReceived(mode: modePassOver, row_id: choreRowPassOver, title: choreTitle.text!, sound: choreSound.text!, image: choreImagePassOver, frequency: choreFrequency.text!, timesPerDay: Int16(choreTimesPerDay.text!)!, startDate: choreStartDatePassOver, endDate: choreEndDatePassOver, reminderTimes: choreReminderTimesPassOver)
         dismiss(animated: true, completion: nil)
     }
     

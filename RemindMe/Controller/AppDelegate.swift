@@ -135,53 +135,54 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             
         case "DONE_ACTION":
             print ("Done Action selected")
-            // Get the meeting ID from the original notification.
-            let userInfo = response.notification.request.content.userInfo
-
-            let reminderID = userInfo["REMINDER_ID"] as! String
-            
-            // Lookup the chore by notification ID
-            let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-            var choresArray = [Chore]()
-            let request : NSFetchRequest<Chore> = Chore.fetchRequest()
-            request.predicate = NSPredicate(format: "tr_reminderID CONTAINS[cd] %@", reminderID)
-
-            do {
-                choresArray = try context.fetch(request)
-            } catch {
-                print("Error loading item array, \(error)")
-            }
-            print ("Chores extracted from db \(choresArray.count) \(choresArray[0].ch_title)")
-            
-            if choresArray.count == 1 {
-                
-                // Reschedule next notification
-                let dc = Scheduler().scheduleDate(reminderTimeArray: choresArray[0].sh_reminderTimes as! [String], startDate: choresArray[0].sh_startDate!, endDate: choresArray[0].sh_endDate!, frequency: choresArray[0].sh_frequency!, weekDaysArray: [4])
-                let (notificationDate, notificationID) = Scheduler().scheduleNotification(dateComponents: dc, title: "Your reminder", body: choresArray[0].ch_title!, reminderID: reminderID)
-
-                print ("Next notification is set for: \(notificationDate) and ID is \(notificationID)")
-
-                //Update the reminder ID and next reminder date
-                do {
-                    let objectUpdate = choresArray[0] as NSManagedObject
-                    objectUpdate.setValue(notificationID, forKey: "tr_reminderID")
-                    objectUpdate.setValue(notificationDate, forKey: "tr_nextReminder")
-                } catch {
-                    print ("Error updating record \(error)")
-                }
-
-                //func save items
-                do {
-                    try context.save()
-                } catch {
-                    print("Error saving to Core Data, \(error)")
-                }
-            }
+//            // Get the meeting ID from the original notification.
+//            let userInfo = response.notification.request.content.userInfo
+//
+//            let reminderID = userInfo["REMINDER_ID"] as! String
+//            
+//            // Lookup the chore by notification ID
+//            let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+//            var choresArray = [Chore]()
+//            let request : NSFetchRequest<Chore> = Chore.fetchRequest()
+//            request.predicate = NSPredicate(format: "tr_reminderID CONTAINS[cd] %@", reminderID)
+//
+//            do {
+//                choresArray = try context.fetch(request)
+//            } catch {
+//                print("Error loading item array, \(error)")
+//            }
+//            print ("Chores extracted from db \(choresArray.count) \(choresArray[0].ch_title)")
+//            
+//            if choresArray.count == 1 {
+//                
+//                // Reschedule next notification
+//                let dc = Scheduler().scheduleDate(reminderTimeArray: choresArray[0].sh_reminderTimes as! [String], startDate: choresArray[0].sh_startDate!, endDate: choresArray[0].sh_endDate!, frequency: choresArray[0].sh_frequency!, weekDaysArray: [4])
+//                let (notificationDate, notificationID) = Scheduler().scheduleNotification(dateComponents: dc, title: "Your reminder", body: choresArray[0].ch_title!, reminderID: reminderID)
+//
+//                print ("Next notification is set for: \(notificationDate) and ID is \(notificationID)")
+//
+//                //Update the reminder ID and next reminder date
+//                do {
+//                    let objectUpdate = choresArray[0] as NSManagedObject
+//                    objectUpdate.setValue(notificationID, forKey: "tr_reminderID")
+//                    objectUpdate.setValue(notificationDate, forKey: "tr_nextReminder")
+//                } catch {
+//                    print ("Error updating record \(error)")
+//                }
+//
+//                //func save items
+//                do {
+//                    try context.save()
+//                } catch {
+//                    print("Error saving to Core Data, \(error)")
+//                }
+//            }
             break
             
             // Handle other actions…
             
         default:
+            print ("Another action taken")
             break
         }
         
