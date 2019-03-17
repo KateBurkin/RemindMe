@@ -19,8 +19,12 @@ struct customCell {
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UNUserNotificationCenterDelegate, CanReceive {
 
     @IBOutlet weak var choresTable: UITableView!
+    @IBOutlet var notificationCount: UILabel!
+    @IBOutlet var clearNotifications: UIButton!
     
+
     //1. Initialise variables
+    var notifCount : Int = 0
     var choresArray = [Chore]()
     var modeToPass : String = ""
     var choreRowToPass : Int = 0
@@ -43,23 +47,41 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         
         super.viewDidLoad()
-        print ("###DATA FILE PATH \(dataFilePath)")
+        print ("###DATA FILE PATH \(String(describing: dataFilePath))")
 
         // Set yourself as the delegate and datasource here:
         self.choresTable.delegate = self
         self.choresTable.dataSource = self
         
-
+        getNotificationCount()
+        notificationCount.text = "Pending notifications \(notifCount)"
+        
         //Register my CustomCell.xib file here:
         choresTable.register(UINib(nibName: "CustomCell", bundle: nil), forCellReuseIdentifier: "customCell")
-        print ("Got past registering custom cell")
         loadItems()
     }
 
+    //MARK:- NOTIFICATIONS RECONCILE FUNCTION
+    
+    func getNotificationCount (){
+        let notificationCenter = UNUserNotificationCenter.current()       
+        notificationCenter.getPendingNotificationRequests { (notifications) in
+            self.notifCount = notifications.count
+        }
+    }
+    
+    @IBAction func clearNotificationsPressed(_ sender: Any) {
+//        let notificationCenter = UNUserNotificationCenter.current()
+//        notificationCenter.removeAllPendingNotificationRequests()
+//        getNotificationCount()
+    }
+    
+    
     //MARK:- TABLE VIEW FUNCTIONS
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80
     }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return choresArray.count
     }
@@ -142,7 +164,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func dataReceived(mode: String, row_id: Int, title: String, sound: String, image: String, frequency: String, timesPerDay: Int16, startDate: Date, endDate: Date, reminderTimes: [String]) {
 
         var savedRow_id = row_id
-        print ("Reminder times passed to save: \(reminderTimes as! [String])")
+        print ("Reminder times passed to save: \(reminderTimes)")
 
         if mode == "Update" {
             let request : NSFetchRequest<Chore> = Chore.fetchRequest()
@@ -193,7 +215,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
             saveItems()
         }
-        if choresArray[choreRowToPass].tr_reminderID1 != nil && choresArray[choreRowToPass].tr_reminderID2 != "" {
+        if choresArray[choreRowToPass].tr_reminderID2 != nil && choresArray[choreRowToPass].tr_reminderID2 != "" {
             Scheduler().removeNotification(reminderID: choresArray[choreRowToPass].tr_reminderID2!)
             let request : NSFetchRequest<Chore> = Chore.fetchRequest()
             do {
@@ -206,7 +228,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
             saveItems()
         }
-        if choresArray[choreRowToPass].tr_reminderID1 != nil && choresArray[choreRowToPass].tr_reminderID3 != "" {
+        if choresArray[choreRowToPass].tr_reminderID3 != nil && choresArray[choreRowToPass].tr_reminderID3 != "" {
             Scheduler().removeNotification(reminderID: choresArray[choreRowToPass].tr_reminderID3!)
             let request : NSFetchRequest<Chore> = Chore.fetchRequest()
             do {
@@ -222,7 +244,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         // SET new reminders and save reminder IDs to record
         for tt in reminderTimes {            
-            let dc = Scheduler().scheduleDate(reminderTimePassed: tt, startDate: startDate, endDate: endDate, frequency: frequency, weekDaysArray: [8])
+            let dc = Scheduler().scheduleDate(reminderTimePassed: tt, startDate: startDate, endDate: endDate, frequency: frequency)
             let (notificationDate, notificationID) = Scheduler().scheduleNotification(dateComponents: dc, title: "Your reminder", body: title)
             reminderCount += 1
             let request : NSFetchRequest<Chore> = Chore.fetchRequest()
@@ -240,6 +262,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         saveItems()
         loadItems()
+        getNotificationCount()
+        notificationCount.text = "Pending notifications \(notifCount)"
     }
     
     

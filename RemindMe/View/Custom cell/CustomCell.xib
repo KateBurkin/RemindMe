@@ -39,8 +39,8 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ufi-bB-TB9">
-                        <rect key="frame" x="0.0" y="2.5" width="76" height="76"/>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ufi-bB-TB9">
+                        <rect key="frame" x="0.0" y="2" width="76" height="76"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="76" id="gGO-N5-O9p"/>
                             <constraint firstAttribute="height" constant="76" id="iHH-vG-NDT"/>
@@ -52,9 +52,9 @@
                     <constraint firstItem="RDs-yp-k1k" firstAttribute="leading" secondItem="ufi-bB-TB9" secondAttribute="trailing" constant="5" id="25t-OQ-SD7"/>
                     <constraint firstItem="RDs-yp-k1k" firstAttribute="top" secondItem="bFK-u3-gDh" secondAttribute="bottom" constant="2" id="KZp-aC-oXg"/>
                     <constraint firstItem="bFK-u3-gDh" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="2" id="TAz-jW-ZIy"/>
+                    <constraint firstItem="ufi-bB-TB9" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="VAq-dD-HVB"/>
                     <constraint firstAttribute="bottom" secondItem="ufi-bB-TB9" secondAttribute="bottom" constant="2" id="cW7-Eq-8FA"/>
-                    <constraint firstItem="ufi-bB-TB9" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="k0H-Re-rG2"/>
-                    <constraint firstItem="ufi-bB-TB9" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="2" id="p5u-Av-dVu"/>
+                    <constraint firstItem="ufi-bB-TB9" firstAttribute="top" relation="greaterThanOrEqual" secondItem="H2p-sc-9uM" secondAttribute="top" constant="2" id="p5u-Av-dVu"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

@@ -135,16 +135,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             
         case "DONE_ACTION":
             print ("Done Action selected")
-//            // Get the meeting ID from the original notification.
+//            // Get the reminder ID from the original notification.
 //            let userInfo = response.notification.request.content.userInfo
 //
 //            let reminderID = userInfo["REMINDER_ID"] as! String
-//            
+//
 //            // Lookup the chore by notification ID
 //            let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 //            var choresArray = [Chore]()
 //            let request : NSFetchRequest<Chore> = Chore.fetchRequest()
-//            request.predicate = NSPredicate(format: "tr_reminderID CONTAINS[cd] %@", reminderID)
+//            request.predicate = NSPredicate(format: "tr_reminderID1 CONTAINS[cd] %@", reminderID)
 //
 //            do {
 //                choresArray = try context.fetch(request)
@@ -152,20 +152,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 //                print("Error loading item array, \(error)")
 //            }
 //            print ("Chores extracted from db \(choresArray.count) \(choresArray[0].ch_title)")
-//            
+//
 //            if choresArray.count == 1 {
-//                
+//                let reminderTimeArray : [String] = choresArray[0].sh_reminderTimes! as! [String]
+//                let reminderTimePassed = reminderTimeArray[0]
+//
+//                // Remove current reminders (if any)
+//                Scheduler().removeNotification(reminderID: reminderID)
+//
 //                // Reschedule next notification
-//                let dc = Scheduler().scheduleDate(reminderTimeArray: choresArray[0].sh_reminderTimes as! [String], startDate: choresArray[0].sh_startDate!, endDate: choresArray[0].sh_endDate!, frequency: choresArray[0].sh_frequency!, weekDaysArray: [4])
-//                let (notificationDate, notificationID) = Scheduler().scheduleNotification(dateComponents: dc, title: "Your reminder", body: choresArray[0].ch_title!, reminderID: reminderID)
+//                let dc = Scheduler().scheduleDate(reminderTimePassed: reminderTimePassed, startDate: choresArray[0].sh_startDate!, endDate: choresArray[0].sh_endDate!, frequency: choresArray[0].sh_frequency!)
+//                let (notificationDate, notificationID) = Scheduler().scheduleNotification(dateComponents: dc, title: "Your reminder", body: choresArray[0].ch_title!)
 //
 //                print ("Next notification is set for: \(notificationDate) and ID is \(notificationID)")
 //
 //                //Update the reminder ID and next reminder date
 //                do {
 //                    let objectUpdate = choresArray[0] as NSManagedObject
-//                    objectUpdate.setValue(notificationID, forKey: "tr_reminderID")
-//                    objectUpdate.setValue(notificationDate, forKey: "tr_nextReminder")
+//                    objectUpdate.setValue(notificationID, forKey: "tr_reminderID1")
+//                    objectUpdate.setValue(notificationDate, forKey: "tr_nextReminder1")
 //                } catch {
 //                    print ("Error updating record \(error)")
 //                }
@@ -177,12 +182,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 //                    print("Error saving to Core Data, \(error)")
 //                }
 //            }
-            break
-            
-            // Handle other actions…
-            
+//            break
+//
+//            // Handle other actions…
+//
         default:
-            print ("Another action taken")
+           print ("Another action taken")
             break
         }
         
