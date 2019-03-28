@@ -42,7 +42,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        
+//        var displayString = "#####Current Pending Notifications "
+//        UNUserNotificationCenter.current().getPendingNotificationRequests {
+//            (requests) in
+//            displayString += "count:\(requests.count)\t"
+//            for request in requests{
+//                displayString += "\(request.description) \t"
+//            }
+//            print(displayString)
+//            
+//            var display2String = "#####Current Delivered Notifications "
+//            UNUserNotificationCenter.current().getDeliveredNotifications {
+//                (requests2) in
+//                display2String += "count:\(requests2.count)\t"
+//                for request in requests2{
+//                    display2String += "\(request.description)\t"
+//                }
+//                print(display2String)
+//            }
+//        }
     }
+        
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
@@ -193,8 +214,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         // Always call the completion handler when done.
         completionHandler()
-
-        
     }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        //let userInfo = notification.request.content.userInfo
+        
+        print("Notification shown")
+        
+        // Change this to your preferred presentation option
+        // Play a sound.
+        //  completionHandler(UNNotificationPresentationOptions.sound)
+    }
+    
 }
 

@@ -18,6 +18,10 @@
 		44410138221E58C200E3A6A4 /* ChoreDetailsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44410137221E58C200E3A6A4 /* ChoreDetailsController.swift */; };
 		4441013A221E609F00E3A6A4 /* dog_bark4.wav in Resources */ = {isa = PBXBuildFile; fileRef = 44410139221E609F00E3A6A4 /* dog_bark4.wav */; };
 		4441013C221E60AB00E3A6A4 /* cat_meow_x.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4441013B221E60AB00E3A6A4 /* cat_meow_x.wav */; };
+		44560BEC224CB67D0093141C /* DateTimePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44560BEB224CB67D0093141C /* DateTimePicker.swift */; };
+		44560BEF224CBB6F0093141C /* DateTimePicker.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 44560BED224CBB6F0093141C /* DateTimePicker.storyboard */; };
+		44560BF1224CEF090093141C /* TextPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44560BF0224CEF090093141C /* TextPickerViewController.swift */; };
+		44560BF4224CF0C10093141C /* TextPicker.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 44560BF2224CF0C10093141C /* TextPicker.storyboard */; };
 		44C33C9A2230B3BF00779BC6 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C33C992230B3BF00779BC6 /* NotificationService.swift */; };
 		44C33C9E2230B3BF00779BC6 /* RemindMeNS.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 44C33C972230B3BF00779BC6 /* RemindMeNS.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		44C33CA42232AFB300779BC6 /* Scheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C33CA32232AFB300779BC6 /* Scheduler.swift */; };
@@ -66,6 +70,10 @@
 		44410137221E58C200E3A6A4 /* ChoreDetailsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ChoreDetailsController.swift; path = RemindMe/Controller/ChoreDetailsController.swift; sourceTree = SOURCE_ROOT; };
 		44410139221E609F00E3A6A4 /* dog_bark4.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dog_bark4.wav; sourceTree = "<group>"; };
 		4441013B221E60AB00E3A6A4 /* cat_meow_x.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = cat_meow_x.wav; sourceTree = "<group>"; };
+		44560BEB224CB67D0093141C /* DateTimePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimePicker.swift; sourceTree = "<group>"; };
+		44560BEE224CBB6F0093141C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = RemindMe/View/Base.lproj/DateTimePicker.storyboard; sourceTree = "<group>"; };
+		44560BF0224CEF090093141C /* TextPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextPickerViewController.swift; sourceTree = "<group>"; };
+		44560BF3224CF0C10093141C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = RemindMe/View/RemindMe/View/Base.lproj/TextPicker.storyboard; sourceTree = "<group>"; };
 		44C33C92222E72CD00779BC6 /* RemindMe.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RemindMe.entitlements; sourceTree = "<group>"; };
 		44C33C972230B3BF00779BC6 /* RemindMeNS.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RemindMeNS.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		44C33C992230B3BF00779BC6 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
@@ -139,8 +147,10 @@
 			isa = PBXGroup;
 			children = (
 				44CE1425223B6B0E002EE7ED /* Custom cell */,
-				44410126221E2F1700E3A6A4 /* LaunchScreen.storyboard */,
 				4441011E221E2F1500E3A6A4 /* Main.storyboard */,
+				44410126221E2F1700E3A6A4 /* LaunchScreen.storyboard */,
+				44560BED224CBB6F0093141C /* DateTimePicker.storyboard */,
+				44560BF2224CF0C10093141C /* TextPicker.storyboard */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -153,6 +163,8 @@
 				44410137221E58C200E3A6A4 /* ChoreDetailsController.swift */,
 				44E11207222916F600E1740A /* SoundSelectController.swift */,
 				44C33CA32232AFB300779BC6 /* Scheduler.swift */,
+				44560BEB224CB67D0093141C /* DateTimePicker.swift */,
+				44560BF0224CEF090093141C /* TextPickerViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -275,8 +287,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				44560BEF224CBB6F0093141C /* DateTimePicker.storyboard in Resources */,
 				44CE142D223B6DAE002EE7ED /* CustomCell.xib in Resources */,
 				44CE1424223B3C47002EE7ED /* BuhariApps start-up screen.png in Resources */,
+				44560BF4224CF0C10093141C /* TextPicker.storyboard in Resources */,
 				4441013C221E60AB00E3A6A4 /* cat_meow_x.wav in Resources */,
 				44410136221E545700E3A6A4 /* musicicon.png in Resources */,
 				44410128221E2F1700E3A6A4 /* LaunchScreen.storyboard in Resources */,
@@ -304,8 +318,10 @@
 			files = (
 				4441011D221E2F1500E3A6A4 /* ViewController.swift in Sources */,
 				4441011B221E2F1500E3A6A4 /* AppDelegate.swift in Sources */,
+				44560BEC224CB67D0093141C /* DateTimePicker.swift in Sources */,
 				44410138221E58C200E3A6A4 /* ChoreDetailsController.swift in Sources */,
 				44C33CA42232AFB300779BC6 /* Scheduler.swift in Sources */,
+				44560BF1224CEF090093141C /* TextPickerViewController.swift in Sources */,
 				44410123221E2F1500E3A6A4 /* RemindMe.xcdatamodeld in Sources */,
 				44CE142C223B6DAE002EE7ED /* CustomCell.swift in Sources */,
 				44E11208222916F600E1740A /* SoundSelectController.swift in Sources */,
@@ -345,6 +361,22 @@
 				44410127221E2F1700E3A6A4 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		44560BED224CBB6F0093141C /* DateTimePicker.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				44560BEE224CBB6F0093141C /* Base */,
+			);
+			name = DateTimePicker.storyboard;
+			sourceTree = "<group>";
+		};
+		44560BF2224CF0C10093141C /* TextPicker.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				44560BF3224CF0C10093141C /* Base */,
+			);
+			name = TextPicker.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

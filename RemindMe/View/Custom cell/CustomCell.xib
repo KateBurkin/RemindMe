@@ -63,7 +63,7 @@
                 <outlet property="ChoreTitleLabel" destination="bFK-u3-gDh" id="INK-If-DSp"/>
                 <outlet property="NextReminderTimeLabel" destination="RDs-yp-k1k" id="BZZ-yL-zpp"/>
             </connections>
-            <point key="canvasLocation" x="39.200000000000003" y="46.326836581709152"/>
+            <point key="canvasLocation" x="39.200000000000003" y="45.877061469265371"/>
         </tableViewCell>
     </objects>
 </document>

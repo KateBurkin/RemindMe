@@ -17,6 +17,7 @@ struct customCell {
 }
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UNUserNotificationCenterDelegate, CanReceive {
+  
 
     @IBOutlet weak var choresTable: UITableView!
     @IBOutlet var notificationCount: UILabel!
@@ -26,17 +27,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //1. Initialise variables
     var notifCount : Int = 0
     var choresArray = [Chore]()
+    var rtArray = [ReminderTime]()
     var modeToPass : String = ""
     var choreRowToPass : Int = 0
-    var choreTitleToPass : String = ""
-    var choreImageToPass : String = ""
-    var choreSoundToPass : String = ""
-    var choreFrequencyToPass : String = ""
-    var choreTimesPerDayToPass : Int16 = 0
-    var choreStartDateToPass : Date = Date.init()
-    var choreEndDateToPass : Date = Date.init()
-    var choreReminderTimesToPass = ["00:00"]
-    var choreReminderIDsArray : [String] = [""]
+//    var choreImageToPass : String = ""
+//    var choreSoundToPass : String = ""
+//    var choreFrequencyToPass : String = ""
+//    var choreTimesPerDayToPass : Int16 = 0
+//    var choreStartDateToPass : Date = Date.init()
+//    var choreEndDateToPass : Date = Date.init()
+    var choreReminderTimesToPass : [String] = []
+//    var choreReminderIDsArray : [String] = [""]
     var choreReminderTimesArray : [Date] = [Date.init()]
     
     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Chore.plist")
@@ -53,8 +54,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.choresTable.delegate = self
         self.choresTable.dataSource = self
         
-        getNotificationCount()
-        notificationCount.text = "Pending notifications \(notifCount)"
+        //getNotificationCount()
+        //notificationCount.text = "Pending notifications \(notifCount)"
         
         //Register my CustomCell.xib file here:
         choresTable.register(UINib(nibName: "CustomCell", bundle: nil), forCellReuseIdentifier: "customCell")
@@ -98,13 +99,27 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         cell.ChoreImage.image = UIImage(named: choresArray[indexPath.row].ch_image!)
         
         // TO DO: - update code to select next reminder of the three reminder times
-        
-        if choresArray[indexPath.row].tr_nextReminder1 != nil {
-            cell.NextReminderTimeLabel.text = "Next reminder: \n\(dateFormatter.string(from: choresArray[indexPath.row].tr_nextReminder1!))"
-        } else {
-            cell.NextReminderTimeLabel.text = "No reminder set"
+        // filter reminder times to the selected chore by title using predicate
+        let request: NSFetchRequest<ReminderTime> = ReminderTime.fetchRequest()
+        let reminderPredicate = NSPredicate(format: "chore.ch_title MATCHEs %@", choresArray[indexPath.row].ch_title!)
+        request.predicate = reminderPredicate
+        request.sortDescriptors = [NSSortDescriptor(key: "rt_nextReminderTime", ascending: false)]
+        do {
+            rtArray = try context.fetch(request)
+        } catch {
+            print("Error loading item array, \(error)")
         }
-
+        
+        //print ("FINDING NEXT RT for \(choresArray[indexPath.row].ch_title)   \(rtArray)")
+        // cycle through array and select first value that is past today's date otherwise pass text "No reminder set"
+        cell.NextReminderTimeLabel.text = "No reminder set"
+        for tt in rtArray {
+            if tt.rt_nextReminderTime != nil{
+                if tt.rt_nextReminderTime! > Date.init() {
+                    cell.NextReminderTimeLabel.text = "Next reminder: \n\(dateFormatter.string(from: tt.rt_nextReminderTime!))"
+                }
+            }
+        }
         return cell
     }
     
@@ -113,18 +128,19 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // populate details from selected chore
         modeToPass = "Update"
         choreRowToPass = indexPath.row
-        choreTitleToPass = choresArray[indexPath.row].ch_title!
-        choreSoundToPass = choresArray[indexPath.row].ch_sound!
-        choreImageToPass = choresArray[indexPath.row].ch_image!
-        choreFrequencyToPass = choresArray[indexPath.row].sh_frequency!
-        choreTimesPerDayToPass = choresArray[indexPath.row].sh_timesPerDay
-        choreStartDateToPass = choresArray[indexPath.row].sh_startDate!
-        choreEndDateToPass = choresArray[indexPath.row].sh_endDate!
-        choreReminderTimesToPass = choresArray[indexPath.row].sh_reminderTimes as! [String]
-        //choreReminderID = choresArray[indexPath.row].tr_reminderID1!
-        
-        print (choresArray[indexPath.row].sh_reminderTimes as! [String])
-        
+
+        // Fetch reminder times for this chore
+        choreReminderTimesToPass = []
+        let request: NSFetchRequest<ReminderTime> = ReminderTime.fetchRequest()
+        let reminderPredicate = NSPredicate(format: "chore.ch_title MATCHEs %@", choresArray[indexPath.row].ch_title!)
+        request.predicate = reminderPredicate
+        request.sortDescriptors = [NSSortDescriptor(key: "rt_reminderTime", ascending: true)]
+        do {
+            rtArray = try context.fetch(request)
+        } catch {
+            print("Error loading item array, \(error)")
+        }
+
         // perform segue to ChoreDetailsController
         self.performSegue(withIdentifier: "goToChoreDetails", sender: self)
     }
@@ -133,55 +149,89 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBAction func addNewButtonPressed(_ sender: Any) {
         modeToPass = "New"
         choreRowToPass = 0
-        choreTitleToPass = ""
-        choreSoundToPass = "sound.wav"
-        choreImageToPass = "reminderIcon_Fotor.jpg"
-        choreFrequencyToPass = "daily"
-        choreTimesPerDayToPass = 1
-        choreStartDateToPass = Date.init()
-        choreEndDateToPass = Date.init().addingTimeInterval(31622400)
-        choreReminderTimesToPass = ["09:00"]
+        //choreReminderTimesToPass = []
     }
     
     
     //MARK:  SEGUE FUNCTIONS
      override func prepare(for segue: UIStoryboardSegue, sender: Any?){
         let destinationVC = segue.destination as! ChoreDetailsController
+        destinationVC.selectedChore = choresArray[choreRowToPass]
         destinationVC.modePassOver = modeToPass
         destinationVC.choreRowPassOver = choreRowToPass
-        destinationVC.choreTitlePassOver = choreTitleToPass
-        destinationVC.choreSoundPassOver = choreSoundToPass
-        destinationVC.choreImagePassOver = choreImageToPass
-        destinationVC.choreFrequencyPassOver = choreFrequencyToPass
-        destinationVC.timesPerDayPassOver = choreTimesPerDayToPass
-        destinationVC.choreStartDatePassOver = choreStartDateToPass
-        destinationVC.choreEndDatePassOver = choreEndDateToPass
-        destinationVC.choreReminderTimesPassOver = choreReminderTimesToPass
+        destinationVC.selectedReminderTimes = rtArray
         destinationVC.backscreen = self
     }
     
     
-    func dataReceived(mode: String, row_id: Int, title: String, sound: String, image: String, frequency: String, timesPerDay: Int16, startDate: Date, endDate: Date, reminderTimes: [String]) {
-
+    func dataReceived(mode: String, row_id: Int, title: String, sound: String, image: String, frequency: String, timesPerDay: Int16, startDate: Date, endDate: Date, reminderTimesArray: [String], reminderTimesChangeLog:[String:String], reminderDeletedArray:[String]) {
+        
         var savedRow_id = row_id
-        print ("Reminder times passed to save: \(reminderTimes)")
+        print ("Start Date Passed: \(startDate)   End Date Passed:  \(endDate)")
 
         if mode == "Update" {
-            let request : NSFetchRequest<Chore> = Chore.fetchRequest()
-            do {
-                let choreRecord = try context.fetch(request)
-                let objectUpdate = choreRecord[row_id] as NSManagedObject
-                objectUpdate.setValue(title, forKey: "ch_title")
-                objectUpdate.setValue(sound, forKey: "ch_sound")
-                objectUpdate.setValue(image, forKey: "ch_image")
-                objectUpdate.setValue(frequency, forKey: "sh_frequency")
-                objectUpdate.setValue(timesPerDay, forKey: "sh_timesPerDay")
-                objectUpdate.setValue(startDate, forKey: "sh_startDate")
-                objectUpdate.setValue(endDate, forKey: "sh_endDate")
-                objectUpdate.setValue(reminderTimes as NSObject, forKey: "sh_reminderTimes")
-            } catch {
-                print ("Error updating record \(error)")
+            let selectedChore : Chore = choresArray[row_id]
+            let objectUpdate = choresArray[row_id] as NSManagedObject
+            objectUpdate.setValue(title, forKey: "ch_title")
+            objectUpdate.setValue(sound, forKey: "ch_sound")
+            objectUpdate.setValue(image, forKey: "ch_image")
+            objectUpdate.setValue(frequency, forKey: "sh_frequency")
+            objectUpdate.setValue(timesPerDay, forKey: "sh_timesPerDay")
+            objectUpdate.setValue(startDate, forKey: "sh_startDate")
+            objectUpdate.setValue(endDate, forKey: "sh_endDate")
+            saveItems()
+            
+            // Remove Deleted Reminder Times
+            for tt in reminderDeletedArray {
+                // Delete existing Reminder Time
+                let request: NSFetchRequest<ReminderTime> = ReminderTime.fetchRequest()
+                let p1 = NSPredicate(format: "chore.ch_title MATCHEs %@", title)
+                let p2 = NSPredicate(format: "rt_reminderTime MATCHEs %@", tt)
+                let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [p1, p2])
+                request.predicate = predicate
+                request.sortDescriptors = [NSSortDescriptor(key: "rt_reminderTime", ascending: true)]
+                do {
+                    rtArray = try context.fetch(request)
+                } catch {
+                    print("Error loading item array, \(error)")
+                }
+
+                // Cancel local notification reminder
+                if rtArray.count == 1 {
+                    if rtArray[0].rt_localNotificationID != nil {
+                        Scheduler().removeNotification(reminderID: rtArray[0].rt_localNotificationID!)
+                    }
+                    // delete object reminder
+                    context.delete(self.rtArray[0])
+                }else{
+                    print ("Incorrect number of results returned")
+                }
             }
+            
+            // Add new Reminder Times
+            for tt in reminderTimesArray {
+                // Look up change log
+                let state = reminderTimesChangeLog[tt]
+                if state == "New" {
+                // Set up NEW Reminder Time
+                    // Schedule new local notification reminder --> LNID --> NextReminderDate
+                    let dc = Scheduler().scheduleDate(reminderTimePassed: tt, startDate: startDate, endDate: endDate, frequency: frequency)
+                    let (notificationDate, notificationID) = Scheduler().scheduleNotification(dateComponents: dc, title: "Your reminder", body: title)
+                    
+                    //add new Reminder time record to DB
+                    let newRT = ReminderTime(context: self.context)
+                    newRT.rt_reminderTime = tt
+                    newRT.rt_suspended = false
+                    newRT.rt_localNotificationID = notificationID
+                    newRT.rt_nextReminderTime = notificationDate
+                    newRT.chore = selectedChore
+                    saveItems()
+                    print ("Appended new reminder time \(tt)")
+                }
+            }
+            
+            
+
         } else {
             let newChore = Chore(context: self.context)
             newChore.ch_title = title
@@ -192,78 +242,34 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             newChore.sh_timesPerDay = Int16(timesPerDay)
             newChore.sh_startDate = startDate
             newChore.sh_endDate = endDate
-            newChore.sh_reminderTimes = reminderTimes as NSObject
+            //newChore.sh_reminderTimes = reminderTimes as NSObject
             self.choresArray.append(newChore)
             savedRow_id = choresArray.count - 1
-        }
-        saveItems()
-        
-        // Schedule notifications for each next reminder
-        var reminderCount:Int = 0
-        
-        // Remove current reminders (if any)
-        if choresArray[choreRowToPass].tr_reminderID1 != nil && choresArray[choreRowToPass].tr_reminderID1 != "" {
-            Scheduler().removeNotification(reminderID: choresArray[choreRowToPass].tr_reminderID1!)
-            let request : NSFetchRequest<Chore> = Chore.fetchRequest()
-            do {
-                let test = try context.fetch(request)
-                let objectUpdate = test[savedRow_id] as NSManagedObject
-                objectUpdate.setNilValueForKey("tr_reminderID1")
-                objectUpdate.setNilValueForKey("tr_nextReminder1")
-            } catch {
-                print ("Error updating record \(error)")
-            }
             saveItems()
-        }
-        if choresArray[choreRowToPass].tr_reminderID2 != nil && choresArray[choreRowToPass].tr_reminderID2 != "" {
-            Scheduler().removeNotification(reminderID: choresArray[choreRowToPass].tr_reminderID2!)
-            let request : NSFetchRequest<Chore> = Chore.fetchRequest()
-            do {
-                let test = try context.fetch(request)
-                let objectUpdate = test[savedRow_id] as NSManagedObject
-                objectUpdate.setNilValueForKey("tr_reminderID2")
-                objectUpdate.setNilValueForKey("tr_nextReminder2")
-            } catch {
-                print ("Error updating record \(error)")
-            }
-            saveItems()
-        }
-        if choresArray[choreRowToPass].tr_reminderID3 != nil && choresArray[choreRowToPass].tr_reminderID3 != "" {
-            Scheduler().removeNotification(reminderID: choresArray[choreRowToPass].tr_reminderID3!)
-            let request : NSFetchRequest<Chore> = Chore.fetchRequest()
-            do {
-                let test = try context.fetch(request)
-                let objectUpdate = test[savedRow_id] as NSManagedObject
-                objectUpdate.setNilValueForKey("tr_reminderID3")
-                objectUpdate.setNilValueForKey("tr_nextReminder3")
-            } catch {
-                print ("Error updating record \(error)")
-            }
-            saveItems()
-        }
-        
-        // SET new reminders and save reminder IDs to record
-        for tt in reminderTimes {            
-            let dc = Scheduler().scheduleDate(reminderTimePassed: tt, startDate: startDate, endDate: endDate, frequency: frequency)
-            let (notificationDate, notificationID) = Scheduler().scheduleNotification(dateComponents: dc, title: "Your reminder", body: title)
-            reminderCount += 1
-            let request : NSFetchRequest<Chore> = Chore.fetchRequest()
-            do {
-                let test = try context.fetch(request)
-                let objectUpdate = test[savedRow_id] as NSManagedObject
-                objectUpdate.setValue(notificationID, forKey: "tr_reminderID\(reminderCount)")
-                objectUpdate.setValue(notificationDate, forKey: "tr_nextReminder\(reminderCount)")
-            } catch {
-                print ("Error updating record \(error)")
-            }
             
-
+            //Add Reminder TImes
+            for tt in reminderTimesArray {
+                // Set up NEW Reminder Time
+                // Schedule new local notification reminder --> LNID --> NextReminderDate
+                let dc = Scheduler().scheduleDate(reminderTimePassed: tt, startDate: startDate, endDate: endDate, frequency: frequency)
+                let (notificationDate, notificationID) = Scheduler().scheduleNotification(dateComponents: dc, title: "Your reminder", body: title)
+                
+                //add new Reminder time record to DB
+                let newRT = ReminderTime(context: self.context)
+                newRT.rt_reminderTime = tt
+                newRT.rt_suspended = false
+                newRT.rt_localNotificationID = notificationID
+                newRT.rt_nextReminderTime = notificationDate
+                newRT.chore = newChore
+                saveItems()
+                print ("Appended new reminder time \(tt)")
+            }
         }
-        
+     
         saveItems()
         loadItems()
-        getNotificationCount()
-        notificationCount.text = "Pending notifications \(notifCount)"
+        //getNotificationCount()
+        //notificationCount.text = "Pending notifications \(notifCount)"
     }
     
     
@@ -288,7 +294,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         choresTable.reloadData()
     }
     
-//    func deleteItems(rowNumber: Int) {
+//    func deleteChore(rowNumber: Int) {
 //        context.delete(self.choresArray[rowNumber])
 //        choresArray.remove(at: rowNumber)
 //    }

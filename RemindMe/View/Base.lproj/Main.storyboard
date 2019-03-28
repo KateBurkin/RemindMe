@@ -13,7 +13,7 @@
         <!--List of Chores-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController title="List of Chores" id="BYZ-38-t0r" customClass="ViewController" customModule="RemindMe" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Main View" title="List of Chores" id="BYZ-38-t0r" customClass="ViewController" customModule="RemindMe" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -34,16 +34,6 @@
                                     <segue destination="uHo-Wg-blE" kind="show" identifier="goToChoreDetails" id="lbg-Ib-R9p"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="My Chore Reminders" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YVH-oY-RAp">
-                                <rect key="frame" x="77.5" y="27" width="220" height="45"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="45" id="Dcn-dZ-cwE"/>
-                                    <constraint firstAttribute="width" constant="220" id="pgh-9o-8dg"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
-                                <color key="textColor" red="0.30588235289999999" green="0.4431372549" blue="0.74117647060000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="suq-4Q-Zul">
                                 <rect key="frame" x="25" y="107" width="325" height="478"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -89,6 +79,16 @@
                                     <action selector="clearNotificationsPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="DIV-QS-ixB"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="My Chore Reminders" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YVH-oY-RAp">
+                                <rect key="frame" x="77" y="24" width="220" height="45"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="45" id="Dcn-dZ-cwE"/>
+                                    <constraint firstAttribute="width" constant="220" id="pgh-9o-8dg"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                <color key="textColor" red="0.30588235289999999" green="0.4431372549" blue="0.74117647060000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -114,7 +114,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="130.40000000000001" y="129.98500749625188"/>
+            <point key="canvasLocation" x="-231" y="52"/>
         </scene>
         <!--Chore Details-->
         <scene sceneID="CJY-FR-AiD">
@@ -167,8 +167,8 @@
                                     <constraint firstItem="zfJ-yq-NJJ" firstAttribute="centerY" secondItem="vug-rh-Tn9" secondAttribute="centerY" id="n63-sq-lrS"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="z0W-2f-UiV" userLabel="Schedule View">
-                                <rect key="frame" x="32.5" y="160" width="310" height="330"/>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="z0W-2f-UiV" userLabel="Schedule View">
+                                <rect key="frame" x="33" y="160" width="310" height="407"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Start reminders on" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fnu-EB-gk6">
                                         <rect key="frame" x="0.0" y="0.0" width="150" height="22"/>
@@ -190,19 +190,6 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="First reminder" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="RME-rj-pMQ">
-                                        <rect key="frame" x="55" y="220" width="200" height="30"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="30" id="MG9-YB-JxS"/>
-                                            <constraint firstAttribute="width" constant="200" id="Nr5-sP-zha"/>
-                                        </constraints>
-                                        <nil key="textColor"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                        <connections>
-                                            <action selector="Notification1Pressed:" destination="uHo-Wg-blE" eventType="touchDown" id="2iM-Pa-pHj"/>
-                                        </connections>
-                                    </textField>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Select Frequency" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GwU-BX-89u">
                                         <rect key="frame" x="55" y="155" width="200" height="30"/>
                                         <constraints>
@@ -214,6 +201,7 @@
                                         <textInputTraits key="textInputTraits"/>
                                         <connections>
                                             <action selector="frequencyPressed:" destination="uHo-Wg-blE" eventType="touchDown" id="JWg-sh-kyh"/>
+                                            <segue destination="dK0-TR-W82" kind="presentation" identifier="goToTextPicker" id="hBJ-Qf-9Hj"/>
                                         </connections>
                                     </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Repeat reminders" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1D3-VE-fAY">
@@ -254,38 +242,7 @@
                                         <textInputTraits key="textInputTraits"/>
                                         <connections>
                                             <action selector="startDatePressed:" destination="uHo-Wg-blE" eventType="touchDown" id="FYY-Gs-fWV"/>
-                                        </connections>
-                                    </textField>
-                                    <textField hidden="YES" opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Second reminder" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="cUC-xp-vgg">
-                                        <rect key="frame" x="55" y="253" width="200" height="30"/>
-                                        <accessibility key="accessibilityConfiguration">
-                                            <accessibilityTraits key="traits" notEnabled="YES"/>
-                                        </accessibility>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="200" id="AeL-xn-Y4m"/>
-                                            <constraint firstAttribute="height" constant="30" id="KK5-sy-y3v"/>
-                                        </constraints>
-                                        <nil key="textColor"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                        <connections>
-                                            <action selector="Notification2Pressed:" destination="uHo-Wg-blE" eventType="editingDidEnd" id="0bD-Vh-V50"/>
-                                        </connections>
-                                    </textField>
-                                    <textField hidden="YES" opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Third reminder" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jKV-85-GdD">
-                                        <rect key="frame" x="55" y="286" width="200" height="30"/>
-                                        <accessibility key="accessibilityConfiguration">
-                                            <accessibilityTraits key="traits" notEnabled="YES"/>
-                                        </accessibility>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="30" id="G2s-A1-Nd8"/>
-                                            <constraint firstAttribute="width" constant="200" id="olG-qd-gqW"/>
-                                        </constraints>
-                                        <nil key="textColor"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                        <connections>
-                                            <action selector="Notification3Pressed:" destination="uHo-Wg-blE" eventType="touchDown" id="2A4-v7-xCs"/>
+                                            <segue destination="2yr-eT-nWS" kind="presentation" identifier="goToDateTimePicker" modalPresentationStyle="overCurrentContext" id="jgt-Et-wru"/>
                                         </connections>
                                     </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show reminders at" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Iyx-UB-ORr">
@@ -298,40 +255,50 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <textField hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Select times per day" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="q0r-eM-D8b">
-                                        <rect key="frame" x="0.0" y="154" width="15" height="30"/>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="d9Y-MF-4Bx">
+                                        <rect key="frame" x="32" y="225" width="257" height="166"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <accessibility key="accessibilityConfiguration">
-                                            <accessibilityTraits key="traits" notEnabled="YES"/>
-                                        </accessibility>
-                                        <nil key="textColor"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                        <textInputTraits key="textInputTraits"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <prototypes>
+                                            <tableViewCell clipsSubviews="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" selectionStyle="blue" indentationWidth="10" reuseIdentifier="ReminderTimeCell" editingAccessoryType="checkmark" id="sea-3j-QgV" userLabel="ReminderTimeCell">
+                                                <rect key="frame" x="0.0" y="28" width="257" height="44"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="sea-3j-QgV" id="KKY-oq-mRm">
+                                                    <rect key="frame" x="0.0" y="0.0" width="257" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                </tableViewCellContentView>
+                                            </tableViewCell>
+                                        </prototypes>
                                         <connections>
-                                            <action selector="timesPerDatePressed:" destination="uHo-Wg-blE" eventType="touchDown" id="wDi-sc-cx5"/>
+                                            <outlet property="dataSource" destination="uHo-Wg-blE" id="iHC-x2-32l"/>
+                                            <outlet property="delegate" destination="uHo-Wg-blE" id="Olv-sc-0gU"/>
+                                            <outlet property="prefetchDataSource" destination="uHo-Wg-blE" id="4ES-F5-FrE"/>
                                         </connections>
-                                    </textField>
+                                    </tableView>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hf4-Sx-xk6">
+                                        <rect key="frame" x="259" y="182" width="30" height="48"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                        <state key="normal" title="+"/>
+                                        <connections>
+                                            <action selector="addReminderTimePressed:" destination="uHo-Wg-blE" eventType="touchUpInside" id="UAc-jA-Jur"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstItem="jKV-85-GdD" firstAttribute="centerX" secondItem="z0W-2f-UiV" secondAttribute="centerX" id="1ns-lR-29l"/>
                                     <constraint firstItem="fQc-dZ-0zk" firstAttribute="leading" secondItem="z0W-2f-UiV" secondAttribute="leading" id="9Nr-Qr-kPe"/>
                                     <constraint firstItem="1D3-VE-fAY" firstAttribute="top" secondItem="Pku-ZK-6zL" secondAttribute="bottom" constant="10" id="I2J-a9-vgu"/>
                                     <constraint firstItem="GwU-BX-89u" firstAttribute="top" secondItem="1D3-VE-fAY" secondAttribute="bottom" constant="3" id="LbF-tp-cTs"/>
-                                    <constraint firstItem="RME-rj-pMQ" firstAttribute="top" secondItem="Iyx-UB-ORr" secondAttribute="bottom" constant="3" id="NCe-1U-1Am"/>
-                                    <constraint firstItem="jKV-85-GdD" firstAttribute="top" secondItem="cUC-xp-vgg" secondAttribute="bottom" constant="3" id="PBq-eD-u6b"/>
                                     <constraint firstItem="Pku-ZK-6zL" firstAttribute="top" secondItem="fQc-dZ-0zk" secondAttribute="bottom" constant="3" id="PrC-Zc-hoF"/>
-                                    <constraint firstItem="RME-rj-pMQ" firstAttribute="centerX" secondItem="z0W-2f-UiV" secondAttribute="centerX" id="QRh-Lr-QcR"/>
                                     <constraint firstItem="1D3-VE-fAY" firstAttribute="leading" secondItem="z0W-2f-UiV" secondAttribute="leading" id="VSh-Yp-ep2"/>
                                     <constraint firstItem="fQc-dZ-0zk" firstAttribute="top" secondItem="k1d-Kd-OuI" secondAttribute="bottom" constant="10" id="Wqs-Vp-pI6"/>
-                                    <constraint firstItem="cUC-xp-vgg" firstAttribute="top" secondItem="RME-rj-pMQ" secondAttribute="bottom" constant="3" id="Xmp-8J-gUx"/>
                                     <constraint firstItem="Fnu-EB-gk6" firstAttribute="leading" secondItem="z0W-2f-UiV" secondAttribute="leading" id="Ymt-IG-8kL"/>
                                     <constraint firstItem="Pku-ZK-6zL" firstAttribute="centerX" secondItem="z0W-2f-UiV" secondAttribute="centerX" id="ZOk-qU-MXF"/>
-                                    <constraint firstAttribute="height" constant="330" id="dvu-8v-PWA"/>
+                                    <constraint firstAttribute="height" constant="410" id="dvu-8v-PWA"/>
                                     <constraint firstItem="Iyx-UB-ORr" firstAttribute="top" secondItem="GwU-BX-89u" secondAttribute="bottom" constant="10" id="egX-4Y-E8r"/>
                                     <constraint firstAttribute="width" constant="310" id="gIu-ru-KlK"/>
                                     <constraint firstItem="Iyx-UB-ORr" firstAttribute="leading" secondItem="z0W-2f-UiV" secondAttribute="leading" id="kAq-63-5xW"/>
-                                    <constraint firstItem="cUC-xp-vgg" firstAttribute="centerX" secondItem="z0W-2f-UiV" secondAttribute="centerX" id="kGv-Yw-0eA"/>
                                     <constraint firstItem="GwU-BX-89u" firstAttribute="centerX" secondItem="z0W-2f-UiV" secondAttribute="centerX" id="kzJ-jj-wxh"/>
                                     <constraint firstItem="k1d-Kd-OuI" firstAttribute="top" secondItem="Fnu-EB-gk6" secondAttribute="bottom" constant="3" id="mlq-fA-kBN"/>
                                     <constraint firstItem="Fnu-EB-gk6" firstAttribute="top" secondItem="z0W-2f-UiV" secondAttribute="top" id="qHp-zz-L7I"/>
@@ -428,23 +395,37 @@
                         <viewLayoutGuide key="safeArea" id="Gl7-ug-3j2"/>
                     </view>
                     <connections>
-                        <outlet property="NotificationTime1" destination="RME-rj-pMQ" id="UAN-ej-VaV"/>
-                        <outlet property="NotificationTime2" destination="cUC-xp-vgg" id="LJ3-a2-hlE"/>
-                        <outlet property="NotificationTime3" destination="jKV-85-GdD" id="Wri-tj-Enz"/>
+                        <outlet property="addReminderTime" destination="hf4-Sx-xk6" id="ewU-kX-w6d"/>
                         <outlet property="cancelButton" destination="zfJ-yq-NJJ" id="Xm8-nr-ofR"/>
                         <outlet property="choreEndDAte" destination="Pku-ZK-6zL" id="EjR-In-ct0"/>
                         <outlet property="choreFrequency" destination="GwU-BX-89u" id="L6I-Rc-zwa"/>
                         <outlet property="choreImage" destination="hH7-pn-TkG" id="0so-pp-Qef"/>
                         <outlet property="choreSound" destination="SpA-ZD-ky1" id="S70-Yv-dee"/>
                         <outlet property="choreStartDate" destination="k1d-Kd-OuI" id="phz-sT-Zv3"/>
-                        <outlet property="choreTimesPerDay" destination="q0r-eM-D8b" id="A7v-wH-E2m"/>
                         <outlet property="choreTitle" destination="B2i-hE-m3t" id="0aa-F4-vW2"/>
+                        <outlet property="reminderTimesTable" destination="d9Y-MF-4Bx" id="5HZ-w9-oox"/>
                         <outlet property="saveButton" destination="ZaX-Nn-yQb" id="gfs-hg-r4V"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="J43-v1-7Jy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="949.60000000000002" y="133.5832083958021"/>
+            <point key="canvasLocation" x="495" y="52"/>
+        </scene>
+        <!--TextPicker-->
+        <scene sceneID="ini-Ws-e6y">
+            <objects>
+                <viewControllerPlaceholder storyboardName="TextPicker" referencedIdentifier="TextPicker" id="dK0-TR-W82" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gYP-XM-NS9" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1168" y="191"/>
+        </scene>
+        <!--DateTimePicker-->
+        <scene sceneID="pgJ-0c-4Zo">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="DateTimePicker" storyboardName="DateTimePicker" referencedIdentifier="DateTimePicker" id="2yr-eT-nWS" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9mS-ez-G40" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1281" y="-375"/>
         </scene>
     </scenes>
     <resources>

@@ -31,7 +31,8 @@ class Scheduler {
         }
         
         //2. Create the trigger
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+        
         returnDate = trigger.nextTriggerDate()!
         print("Next notification date \(String(describing: trigger.nextTriggerDate()))")
             
@@ -51,6 +52,7 @@ class Scheduler {
 //            content.attachments = UIImage(named: "binicon.png")
         
         let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
+        
             
         //5. Schedule the request with the system.
         notificationCenter.add(request) { (error) in
@@ -64,6 +66,9 @@ class Scheduler {
     
     
     func scheduleDate (reminderTimePassed : String, startDate : Date, endDate : Date, frequency : String) -> DateComponents {
+        
+        print ("Schedule date to be determined based on RT String\(reminderTimePassed)  Start Date\(startDate)  End Date\(endDate)  Frequency\(frequency)")
+        
         //1. Initialise variables and formatters
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm"

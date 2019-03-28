@@ -16,8 +16,17 @@
         <attribute name="tr_reminderID1" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tr_reminderID2" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tr_reminderID3" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="reminderTimes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ReminderTime" inverseName="chore" inverseEntity="ReminderTime" syncable="YES"/>
+    </entity>
+    <entity name="ReminderTime" representedClassName="ReminderTime" syncable="YES" codeGenerationType="class">
+        <attribute name="rt_localNotificationID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="rt_nextReminderTime" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="rt_reminderTime" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="rt_suspended" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="chore" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Chore" inverseName="reminderTimes" inverseEntity="Chore" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Chore" positionX="-63" positionY="-18" width="128" height="270"/>
+        <element name="Chore" positionX="-63" positionY="-18" width="128" height="285"/>
+        <element name="ReminderTime" positionX="-54" positionY="108" width="128" height="120"/>
     </elements>
 </model>

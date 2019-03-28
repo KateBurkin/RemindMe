@@ -7,5 +7,7 @@ target 'RemindMe' do
 
   # Pods for RemindMe
 pod 'NWPusher'
+pod 'RealmSwift'
+pod 'SwipeCellKit'
 
 end
