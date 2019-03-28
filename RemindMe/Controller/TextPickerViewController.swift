@@ -26,6 +26,9 @@ class TextPickerViewController: UIViewController, UIPickerViewDelegate, UIPicker
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(TextPickerViewController.viewTapped(gestureRecogniser:)))
+        view.addGestureRecognizer(tapGesture)
         
         textPicker.delegate = self
         textPicker.dataSource = self
@@ -34,6 +37,10 @@ class TextPickerViewController: UIViewController, UIPickerViewDelegate, UIPicker
             titleLabel.text = "Select Frequency"
         }
         print ("List Array \(listArray)")
+    }
+    
+    @objc func viewTapped(gestureRecogniser: UITapGestureRecognizer) {
+        dismiss(animated: true)
     }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {

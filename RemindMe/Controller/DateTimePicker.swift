@@ -28,6 +28,9 @@ class DateTimePicker: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(DateTimePicker.viewTapped(gestureRecogniser:)))
+        view.addGestureRecognizer(tapGesture)
+        
         switch caller {
         case "startDate":
             titleLabel.text = "Select Start Date"
@@ -45,6 +48,10 @@ class DateTimePicker: UIViewController {
             break
         }
         
+    }
+    
+    @objc func viewTapped(gestureRecogniser: UITapGestureRecognizer) {
+        dismiss(animated: true)
     }
     
     func formatDateToString(passedDate: Date) -> String {
