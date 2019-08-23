@@ -18,6 +18,7 @@
 		44410138221E58C200E3A6A4 /* ChoreDetailsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44410137221E58C200E3A6A4 /* ChoreDetailsController.swift */; };
 		4441013A221E609F00E3A6A4 /* dog_bark4.wav in Resources */ = {isa = PBXBuildFile; fileRef = 44410139221E609F00E3A6A4 /* dog_bark4.wav */; };
 		4441013C221E60AB00E3A6A4 /* cat_meow_x.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4441013B221E60AB00E3A6A4 /* cat_meow_x.wav */; };
+		444ECD53230EE92E0064BF26 /* BlackBin.png in Resources */ = {isa = PBXBuildFile; fileRef = 444ECD52230EE92D0064BF26 /* BlackBin.png */; };
 		44560BEC224CB67D0093141C /* DateTimePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44560BEB224CB67D0093141C /* DateTimePicker.swift */; };
 		44560BEF224CBB6F0093141C /* DateTimePicker.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 44560BED224CBB6F0093141C /* DateTimePicker.storyboard */; };
 		44560BF1224CEF090093141C /* TextPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44560BF0224CEF090093141C /* TextPickerViewController.swift */; };
@@ -70,6 +71,7 @@
 		44410137221E58C200E3A6A4 /* ChoreDetailsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ChoreDetailsController.swift; path = RemindMe/Controller/ChoreDetailsController.swift; sourceTree = SOURCE_ROOT; };
 		44410139221E609F00E3A6A4 /* dog_bark4.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dog_bark4.wav; sourceTree = "<group>"; };
 		4441013B221E60AB00E3A6A4 /* cat_meow_x.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = cat_meow_x.wav; sourceTree = "<group>"; };
+		444ECD52230EE92D0064BF26 /* BlackBin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BlackBin.png; sourceTree = "<group>"; };
 		44560BEB224CB67D0093141C /* DateTimePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimePicker.swift; sourceTree = "<group>"; };
 		44560BEE224CBB6F0093141C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = RemindMe/View/Base.lproj/DateTimePicker.storyboard; sourceTree = "<group>"; };
 		44560BF0224CEF090093141C /* TextPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextPickerViewController.swift; sourceTree = "<group>"; };
@@ -175,6 +177,7 @@
 				44410124221E2F1700E3A6A4 /* Assets.xcassets */,
 				44CE1423223B3C47002EE7ED /* BuhariApps start-up screen.png */,
 				44CE141F2239ABBA002EE7ED /* reminderIcon_Fotor.jpg */,
+				444ECD52230EE92D0064BF26 /* BlackBin.png */,
 				44410133221E540A00E3A6A4 /* binIcon.png */,
 				44410139221E609F00E3A6A4 /* dog_bark4.wav */,
 				4441013B221E60AB00E3A6A4 /* cat_meow_x.wav */,
@@ -295,6 +298,7 @@
 				44410136221E545700E3A6A4 /* musicicon.png in Resources */,
 				44410128221E2F1700E3A6A4 /* LaunchScreen.storyboard in Resources */,
 				44410125221E2F1700E3A6A4 /* Assets.xcassets in Resources */,
+				444ECD53230EE92E0064BF26 /* BlackBin.png in Resources */,
 				44410134221E540B00E3A6A4 /* binIcon.png in Resources */,
 				44CE14202239ABBB002EE7ED /* reminderIcon_Fotor.jpg in Resources */,
 				4441013A221E609F00E3A6A4 /* dog_bark4.wav in Resources */,

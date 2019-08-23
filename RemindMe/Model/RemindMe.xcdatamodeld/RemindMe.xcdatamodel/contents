@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14460.32" systemVersion="17G5019" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14460.32" systemVersion="17G7024" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Chore" representedClassName="Chore" syncable="YES" codeGenerationType="class">
         <attribute name="ch_image" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="ch_sound" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="ch_title" attributeType="String" syncable="YES"/>
         <attribute name="sh_endDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="sh_frequency" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="sh_reminderTimes" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="sh_startDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="sh_suspended" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="sh_timesPerDay" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="sh_weekday" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="tr_nextReminder1" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="tr_nextReminder2" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="tr_nextReminder3" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
@@ -27,6 +27,6 @@
     </entity>
     <elements>
         <element name="Chore" positionX="-63" positionY="-18" width="128" height="285"/>
-        <element name="ReminderTime" positionX="-54" positionY="108" width="128" height="120"/>
+        <element name="ReminderTime" positionX="154.51953125" positionY="71.66015625" width="128" height="120"/>
     </elements>
 </model>

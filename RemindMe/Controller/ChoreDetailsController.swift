@@ -11,14 +11,14 @@ import Foundation
 import CoreData
 
 protocol CanReceive {
-    func dataReceived(mode:String, row_id: Int, title: String, sound : String, image : String, frequency : String, timesPerDay: Int16, startDate: Date, endDate: Date, reminderTimesArray: [String], reminderTimesChangeLog: [String:String], reminderDeletedArray:[String])
+    func dataReceived(mode:String, row_id: Int, title: String, sound : String, image : String, frequency : String, dayofweek: Int, timesPerDay: Int16, reminderTimesArray: [String], reminderTimesChangeLog: [String:String], reminderDeletedArray:[String])
 }
 
 class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableViewDataSource, DTReceive, TXReceive {
 
     //Buttons
-    @IBOutlet weak var cancelButton: UIButton!
-    @IBOutlet weak var saveButton: UIButton!
+    //@IBOutlet weak var cancelButton: UIButton!
+    //@IBOutlet weak var saveButton: UIButton!
     
     //TextFields
     @IBOutlet weak var choreTitle: UITextField!
@@ -27,7 +27,7 @@ class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableView
     @IBOutlet weak var choreStartDate: UITextField!
     @IBOutlet weak var choreEndDAte: UITextField!
     @IBOutlet weak var choreFrequency: UITextField!
-    @IBOutlet weak var choreTimesPerDay: UITextField!
+    @IBOutlet weak var choreWeekday: UITextField!
     
     @IBOutlet var reminderTimesTable: UITableView!
     @IBOutlet weak var addReminderTime: UIButton!
@@ -59,8 +59,7 @@ class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableView
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        print ("Mode Pass Over \(modePassOver)")
+
         if modePassOver == "New" {
             newChoreData()
         } else {
@@ -116,7 +115,7 @@ class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableView
         //TO DO - replace with segue to time picker screen
         dtp_caller = "reminderTime"
         dtp_defaultDate = Date.init()
-        self.performSegue(withIdentifier: "goToDateTimePicker", sender: self.choreStartDate)
+        self.performSegue(withIdentifier: "goToDatePicker", sender: self.choreStartDate)
     }
 
     //MARK: - DATE FORMATTERS
@@ -138,18 +137,20 @@ class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableView
         choreImage.image = UIImage(named: selectedChore!.ch_image!)
         choreSound.text = selectedChore!.ch_sound!
         choreFrequency.text = selectedChore!.sh_frequency!
-        choreStartDate.text = formatDateToString(passedDate: selectedChore!.sh_startDate!)
-        choreEndDAte.text = formatDateToString(passedDate: selectedChore!.sh_endDate!)
+        choreWeekday.text = weekdaytostring(weekdaynumber: Int(selectedChore!.sh_weekday ?? 1))
+        //choreStartDate.text = formatDateToString(passedDate: selectedChore!.sh_startDate!)
+        //choreEndDAte.text = formatDateToString(passedDate: selectedChore!.sh_endDate!)
         loadReminderTimes()
     }
  
     func newChoreData(){
         choreTitle.text = ""
-        choreImage.image = UIImage(named: "reminderIcon_Fotor.jpg")
+        choreImage.image = UIImage(named: "BlackBin.png")
         choreSound.text = "sound.wav"
         choreFrequency.text = "daily"
-        choreStartDate.text = formatDateToString(passedDate: Date.init())
-        choreEndDAte.text = formatDateToString(passedDate: Date.init().addingTimeInterval(31622400))
+        choreWeekday.text = "Monday"
+        //choreStartDate.text = formatDateToString(passedDate: Date.init())
+        //choreEndDAte.text = formatDateToString(passedDate: Date.init().addingTimeInterval(31622400))
     }
     
     func loadReminderTimes(){
@@ -163,21 +164,20 @@ class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableView
         
         // Sort keys
         self.rtWorkingArray.sort()
-        print ("Array of reminder times: \(rtChangeLogArray)")
     }
     
     //MARK: - START AND END DATE PICKERS
     @IBAction func startDatePressed(_ sender: UITextField) {
         dtp_caller = "startDate"
         dtp_defaultDate = formatStringToDate(passedString: choreStartDate.text!)
-        self.performSegue(withIdentifier: "goToDateTimePicker", sender: self.choreStartDate)
+        self.performSegue(withIdentifier: "goToDatePicker", sender: self.choreStartDate)
     }
 
     
     @IBAction func endDatePressed(_ sender: UITextField) {
         dtp_caller = "endDate"
         dtp_defaultDate = formatStringToDate(passedString: choreEndDAte.text!)
-        self.performSegue(withIdentifier: "goToDateTimePicker", sender: self.choreEndDAte)
+        self.performSegue(withIdentifier: "goToDatePicker", sender: self.choreEndDAte)
     }
     
     //MARK: - FREQUENCY AND TIMES PER DAY PICKERS
@@ -187,9 +187,66 @@ class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableView
         self.performSegue(withIdentifier: "goToTextPicker", sender: self.choreFrequency)
     }
     
+
+    @IBAction func weekdayPressed(_ sender: Any) {
+        print ("Weekday Text field pressed")
+        txt_caller = "weekday"
+        txtPickerArray = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+        self.performSegue(withIdentifier: "goToTextPicker", sender: self.choreWeekday)
+    }
+    
+    func weekdaytonumber (weekday:String) -> Int {
+        var rest = 0
+        switch weekday {
+        case "Sunday":
+            rest = 1
+        case "Monday":
+            rest = 2
+        case "Tuesday":
+            rest = 3
+        case "Wednesday":
+            rest = 4
+        case "Thursday":
+            rest = 5
+        case "Friday":
+            rest = 6
+        case "Saturday":
+            rest = 7
+        default:
+            print ("Error")
+            break
+        }
+        
+        return rest
+    }
+    
+    func weekdaytostring (weekdaynumber:Int) -> String {
+        var rest = ""
+        switch weekdaynumber {
+        case 1:
+            rest = "Sunday"
+        case 2:
+            rest = "Monday"
+        case 3:
+            rest = "Tuesday"
+        case 4:
+            rest = "Wednesday"
+        case 5:
+            rest = "Thursday"
+        case 6:
+            rest = "Friday"
+        case 7:
+            rest = "Saturday"
+        default:
+            print ("Error")
+            break
+        }
+        
+        return rest
+    }
     //MARK:  SEGUE FUNCTIONS
     override func prepare(for segue: UIStoryboardSegue, sender: Any?){
-        if segue.identifier == "goToDateTimePicker" {
+        if segue.identifier == "goToDatePicker" {
             let dateTimePickerVC = segue.destination as! DateTimePicker
             dateTimePickerVC.caller = dtp_caller
             dateTimePickerVC.defaultDate = dtp_defaultDate
@@ -226,19 +283,25 @@ class ChoreDetailsController: UIViewController, UITableViewDelegate, UITableView
     func textPicked(tp_caller: String, tp_value: String) {
         if tp_caller == "frequency" {
             choreFrequency.text = tp_value
+        } else if tp_caller == "weekday"{
+            choreWeekday.text = tp_value
         }
     }
     
 
     
     //MARK: SAVE BUTTON
-    @IBAction func SaveButtonPressed(_ sender: UIButton) {
-        backscreen?.dataReceived(mode: modePassOver, row_id: choreRowPassOver, title: choreTitle.text!, sound: choreSound.text!, image: "reminderIcon_Fotor.jpg", frequency: choreFrequency.text!, timesPerDay: 1, startDate: formatStringToDate(passedString: choreStartDate.text!), endDate: formatStringToDate(passedString: choreEndDAte.text!), reminderTimesArray: rtWorkingArray, reminderTimesChangeLog: rtChangeLogArray, reminderDeletedArray: rtDeletedArray)
+    
+    @IBAction func SaveBarButtonPressed(_ sender: UIBarButtonItem) {
+        let weekdaynumber = weekdaytonumber(weekday: choreWeekday.text!)
+        
+        backscreen?.dataReceived(mode: modePassOver, row_id: choreRowPassOver, title: choreTitle.text!, sound: choreSound.text!, image: "BlackBin.png", frequency: choreFrequency.text!, dayofweek: weekdaynumber, timesPerDay: 1, reminderTimesArray: rtWorkingArray, reminderTimesChangeLog: rtChangeLogArray, reminderDeletedArray: rtDeletedArray)
+        dismiss(animated: true, completion: nil)
+    }
+
+    @IBAction func CancelBarButtonPressed(_ sender: UIBarButtonItem) {
         dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func CancelButtonPressed(_ sender: Any) {
-        dismiss(animated: true, completion: nil)
-    }
 
 }

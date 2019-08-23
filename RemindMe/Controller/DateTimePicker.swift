@@ -43,7 +43,7 @@ class DateTimePicker: UIViewController {
         case "reminderTime":
             titleLabel.text = "Select Reminder Time"
             datePicker.datePickerMode = .time
-            datePicker.minuteInterval = 15
+            datePicker.minuteInterval = 1
         default:
             break
         }

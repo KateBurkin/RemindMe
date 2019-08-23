@@ -35,8 +35,10 @@ class TextPickerViewController: UIViewController, UIPickerViewDelegate, UIPicker
 
         if caller ==  "frequency" {
             titleLabel.text = "Select Frequency"
+        }else if caller == "weekday" {
+            titleLabel.text = "Select Weekday"
         }
-        print ("List Array \(listArray)")
+ 
     }
     
     @objc func viewTapped(gestureRecogniser: UITapGestureRecognizer) {
